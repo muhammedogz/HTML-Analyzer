@@ -4,11 +4,14 @@
 # example input: frontend/1.0.0
 # example output: frontend/1.0.1
 
-debug=0
+debug=1
 clean_local_tags=0
 
+prefix=$1
 # get argument from command line, if argument is not set, use default as frontend
-prefix=${1:-frontend}
+if [ -z "$prefix" ]; then
+    prefix="frontend"
+fi
 
 # add / to end
 prefix=${prefix%/}
