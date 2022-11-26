@@ -4,7 +4,7 @@
 # example input: frontend/1.0.0
 # example output: frontend/1.0.1
 
-debug=1
+debug=0
 clean_local_tags=0
 
 prefix=$1
@@ -70,8 +70,10 @@ fi
 
 # add prefix to new version
 # example: frontend/1.0.3
-newTag="$prefix$new_version"
-echo "newTag: $newTag"
+new_tag="$prefix/$new_version"
+if [ $debug -eq 1 ]; then
+    echo "New tag: $new_tag"
+fi
 
 # take user input yes or no
 input=""
