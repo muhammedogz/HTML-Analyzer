@@ -27,7 +27,8 @@ env:
 
 on:
   push:
-    branches: [ "master" ]
+    tags:
+      - 'backend/*'
 
 jobs:
   build:

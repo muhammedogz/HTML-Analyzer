@@ -7,7 +7,12 @@
 debug=0
 clean_local_tags=0
 
-prefix="frontend/"
+# get argument from command line, if argument is not set, use default as frontend
+prefix=${1:-frontend}
+
+# add / to end
+prefix=${prefix%/}
+
 
 # checkout to master branch and check if success
 echo "Checking out to master branch"
