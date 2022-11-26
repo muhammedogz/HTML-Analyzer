@@ -22,16 +22,12 @@ name: Build and deploy ASP.Net Core app to an Azure Web App
 env:
   AZURE_WEBAPP_NAME: HTML-Analyzer-Backend   # set this to the name of your Azure Web App
   AZURE_WEBAPP_PACKAGE_PATH: './backend'      # set this to the path to your web app project, defaults to the repository root
-  ROOT_PATH: './backend'
   DOTNET_VERSION: '6.0.x'                 # set this to the .NET Core version to use
+  ROOT_PATH: './backend'     
 
 on:
   push:
     branches: [ "master" ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   build:
@@ -55,9 +51,11 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
+        working-directory: ${{ env.ROOT_PATH }}
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        working-directory: ${{ env.ROOT_PATH }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -85,5 +83,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BACKEND }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
