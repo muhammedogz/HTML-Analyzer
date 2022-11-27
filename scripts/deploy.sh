@@ -78,15 +78,15 @@ echo "New tag: $new_tag"
 input=""
 while [ "$input" != "y" ] && [ "$input" != "n" ]
 do
-    read -p "Do you want to create new tag $newTag? (y/n): " input
+    read -p "Do you want to create new tag $new_tag? (y/n): " input
 done
 
 # create new tag if user input is yes
 if [ "$input" = "y" ]; then
-    echo "Creating new tag $newTag"
-    git tag $newTag
-    echo "Pushing new tag $newTag"
-    git push origin $newTag
+    echo "Creating new tag $new_tag"
+    git tag $new_tag
+    echo "Pushing new tag $new_tag"
+    git push origin $new_tag
 fi
 
 # return to previous branch
