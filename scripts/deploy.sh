@@ -51,8 +51,9 @@ fi
 
 # get latest tag
 # example release/1.0.2-beta
-latest_tag=$(echo "$tags" | head -n 1)
-echo "latest tag: $latestTag"
+latest_tag=$(echo "$tags" | grep "$prefix" | head -n 1)
+echo "latest_tag: $latest_tag"
+
 
 # split latest tag by / and get last element 
 # example: 1.0.2
@@ -71,9 +72,7 @@ fi
 # add prefix to new version
 # example: frontend/1.0.3
 new_tag="$prefix/$new_version"
-if [ $debug -eq 1 ]; then
-    echo "New tag: $new_tag"
-fi
+echo "New tag: $new_tag"
 
 # take user input yes or no
 input=""
