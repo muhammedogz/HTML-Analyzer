@@ -3,10 +3,9 @@ import HTMLEditor from "components/HTMLEditor";
 
 function App() {
   return (
-    <div>
+    <Stack>
       <HTMLEditor />
-      <Stack>sa</Stack>
-    </div>
+    </Stack>
   );
 }
 export default App;
