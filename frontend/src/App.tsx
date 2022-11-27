@@ -13,7 +13,7 @@ function App() {
         background:
           "linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6))",
       }}
-      p={8}
+      p={{ xs: 2, md: 5 }}
       gap={8}
     >
       <Header />

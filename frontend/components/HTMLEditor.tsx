@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormLabel, Stack, useMediaQuery, useTheme } from "@mui/material";
 import "prismjs/themes/prism-coy.css";
 import AceEditor from "react-ace";
@@ -10,11 +10,26 @@ function HTMLEditor() {
   const isDesktop = useMediaQuery(useTheme().breakpoints.up("md"));
   const [code, setCode] = useState("<h1>Hello World!</h1>");
 
+  const getHtmlFromUrl = useCallback(async (url: string) => {
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const getHtml = useCallback(async () => {
+    const html = await getHtmlFromUrl("https://www.google.com");
+    if (html) {
+      setCode(html);
+    }
+  }, [getHtmlFromUrl]);
+
   // useEffect(() => {
   //   getHtml();
-  // }, []);
-
-  console.log(code);
+  // }, [getHtml]);
 
   return (
     <Stack>
