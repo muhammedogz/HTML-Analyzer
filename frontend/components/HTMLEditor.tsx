@@ -8,7 +8,7 @@ function HTMLEditor() {
   const [code, setCode] = useState("<h1>Hello World!</h1>");
 
   return (
-    <Stack>
+    <Stack minWidth={{ xs: "350px", md: "600px" }}>
       <FormControl>
         <FormLabel htmlFor="html-editor">Enter HTML Input</FormLabel>
         <Stack
