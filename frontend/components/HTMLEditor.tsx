@@ -1,37 +1,52 @@
-import Editor from "react-simple-code-editor";
 import { useState } from "react";
-import { highlight, languages } from "prismjs";
-import { FormControl, FormLabel, Stack } from "@mui/material";
+import { FormLabel, Stack, useMediaQuery, useTheme } from "@mui/material";
 import "prismjs/themes/prism-coy.css";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/ext-language_tools";
 
 function HTMLEditor() {
+  const isDesktop = useMediaQuery(useTheme().breakpoints.up("md"));
   const [code, setCode] = useState("<h1>Hello World!</h1>");
 
+  // useEffect(() => {
+  //   getHtml();
+  // }, []);
+
+  console.log(code);
+
   return (
-    <Stack minWidth={{ xs: "350px", md: "600px" }}>
-      <FormControl>
-        <FormLabel htmlFor="html-editor">Enter HTML Input</FormLabel>
-        <Stack
-          sx={{
-            ".npm__react-simple-code-editor__textarea": {
-              border: "1px solid #000 !important",
-            },
+    <Stack>
+      <FormLabel htmlFor="html-editor">Enter HTML Input</FormLabel>
+      <Stack
+        sx={{
+          m: 2,
+        }}
+      >
+        <AceEditor
+          wrapEnabled
+          placeholder="Enter your HTML"
+          mode="html"
+          theme="monokai"
+          name="blah2"
+          fontSize={14}
+          showGutter={true}
+          value={code}
+          onChange={(value) => setCode(value)}
+          onPaste={(value) => setCode(value)}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: false,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2,
           }}
-        >
-          <Editor
-            id="html-editor"
-            value={code}
-            onValueChange={(code) => setCode(code)}
-            highlight={(code) => highlight(code, languages.html, "html")}
-            padding={10}
-            style={{
-              fontFamily: '"Fira code", "Fira Mono", monospace',
-              fontSize: 12,
-            }}
-            placeholder="Enter HTML here"
-          />
-        </Stack>
-      </FormControl>
+          style={{
+            width: isDesktop ? "700px" : "85vw",
+          }}
+        />
+      </Stack>
     </Stack>
   );
 }

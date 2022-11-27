@@ -15,6 +15,7 @@
     "@mui/material": "^5.10.15",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
+    "ace-builds": "^1.13.1",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
@@ -23,6 +24,7 @@
     "prettier": "^2.8.0",
     "prismjs": "1.15.0",
     "react": "^18.2.0",
+    "react-ace": "^10.1.0",
     "react-dom": "^18.2.0",
     "react-simple-code-editor": "^0.13.1"
   },

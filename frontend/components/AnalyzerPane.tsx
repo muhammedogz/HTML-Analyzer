@@ -1,7 +1,5 @@
 import { Typography } from "@mui/material";
 import { Stack } from "@mui/system";
-import Header from "components/Header";
-import HTMLEditor from "components/HTMLEditor";
 
 interface IAnalyzerPaneProps {
   children: React.ReactNode;
