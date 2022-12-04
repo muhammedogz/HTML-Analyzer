@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { FormLabel, Stack, useMediaQuery, useTheme } from "@mui/material";
-import "prismjs/themes/prism-coy.css";
-import AceEditor from "react-ace";
+import { Button, FormLabel, Stack, useMediaQuery, useTheme } from "@mui/material";
+import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-monokai";
-import "ace-builds/src-noconflict/ext-language_tools";
+import "prismjs/themes/prism-coy.css";
+import { useCallback, useState } from "react";
+import AceEditor from "react-ace";
+import { getAnalyzeFromHtml } from "src/fetchers/htmlAnalyzerFetchers";
 
 function HTMLEditor() {
   const isDesktop = useMediaQuery(useTheme().breakpoints.up("md"));
@@ -26,10 +27,21 @@ function HTMLEditor() {
       setCode(html);
     }
   }, [getHtmlFromUrl]);
+  
+  const sendHtml = useCallback(async () => {
+    try {
+      const response = await getAnalyzeFromHtml(code);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }, [])
 
   // useEffect(() => {
   //   getHtml();
   // }, [getHtml]);
+
 
   return (
     <Stack>
@@ -61,6 +73,11 @@ function HTMLEditor() {
             width: isDesktop ? "700px" : "85vw",
           }}
         />
+        <Button 
+          onClick={sendHtml}
+        >
+          Send
+        </Button>
       </Stack>
     </Stack>
   );

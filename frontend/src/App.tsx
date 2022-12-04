@@ -1,9 +1,8 @@
-import { Typography } from "@mui/material";
 import { Stack } from "@mui/system";
+import 'ace-builds/src-noconflict/ace';
 import AnalyzerPane from "components/AnalyzerPane";
 import Header from "components/Header";
 import HTMLEditor from "components/HTMLEditor";
-
 function App() {
   return (
     <Stack
