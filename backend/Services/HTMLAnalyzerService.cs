@@ -11,28 +11,30 @@ public class HTMLAnalyzerService
 
   public HTMLAnalyze AnalyzeHTML(string html)
   {
-    var htmlDocument = new HtmlDocument();
-    htmlDocument.LoadHtml(html);
+
     var htmlAnalyze = new HTMLAnalyze();
-    htmlAnalyze.HTML = htmlDocument.DocumentNode.OuterHtml;
-    htmlAnalyze.Title = htmlDocument.DocumentNode.SelectSingleNode("//title")?.InnerText;
-    htmlAnalyze.Description = htmlDocument.DocumentNode.SelectSingleNode("//meta[@name='description']")?.Attributes["content"]?.Value;
-    htmlAnalyze.Keywords = GetKeywords(htmlDocument);
-    htmlAnalyze.H1 = GetHeadings(htmlDocument, "h1");
-
-
-    var errors = htmlDocument.ParseErrors;
-    foreach (var error in errors)
-    {
-      var htmlError = new HTMLError();
-      htmlError.Code = error.Code.ToString();
-      htmlError.Line = error.Line.ToString();
-      htmlError.LinePosition = error.LinePosition.ToString();
-      htmlError.Reason = error.Reason;
-      htmlError.SourceText = error.SourceText;
-      htmlError.StreamPosition = error.StreamPosition.ToString();
-      htmlAnalyze.Errors.Add(htmlError);
-    }
+    var htmlDocumentService = new HTMLDocumentService(html);
+    htmlAnalyze.HTML = htmlDocumentService.GetHTML();
+    htmlAnalyze.Title = htmlDocumentService.GetTitle();
+    htmlAnalyze.Description = htmlDocumentService.GetDescription();
+    htmlAnalyze.Keywords = htmlDocumentService.GetKeywords();
+    htmlAnalyze.H1 = htmlDocumentService.GetNodes("h1");
+    htmlAnalyze.H2 = htmlDocumentService.GetNodes("h2");
+    htmlAnalyze.H3 = htmlDocumentService.GetNodes("h3");
+    htmlAnalyze.H4 = htmlDocumentService.GetNodes("h4");
+    htmlAnalyze.H5 = htmlDocumentService.GetNodes("h5");
+    htmlAnalyze.H6 = htmlDocumentService.GetNodes("h6");
+    htmlAnalyze.Links = htmlDocumentService.GetNodes("a");
+    htmlAnalyze.Images = htmlDocumentService.GetNodes("img");
+    htmlAnalyze.Scripts = htmlDocumentService.GetNodes("script");
+    htmlAnalyze.Styles = htmlDocumentService.GetNodes("style");
+    htmlAnalyze.Forms = htmlDocumentService.GetNodes("form");
+    htmlAnalyze.Inputs = htmlDocumentService.GetNodes("input");
+    htmlAnalyze.Lists = htmlDocumentService.GetNodes("ul");
+    htmlAnalyze.Tables = htmlDocumentService.GetNodes("table");
+    htmlAnalyze.Text = htmlDocumentService.GetText();
+    htmlAnalyze.HTMLVersion = htmlDocumentService.GetHTMLVersion();
+    htmlAnalyze.Errors = htmlDocumentService.GetErrors();
     return htmlAnalyze;
   }
 }

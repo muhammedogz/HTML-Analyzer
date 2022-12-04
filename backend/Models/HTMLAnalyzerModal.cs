@@ -7,20 +7,20 @@ public class HTMLAnalyze
   public string? Title { get; set; }
   public string? Description { get; set; }
   public List<string> Keywords { get; set; }
-  public List<string> H1 { get; set; }
-  public List<string> H2 { get; set; }
-  public List<string> H3 { get; set; }
-  public List<string> H4 { get; set; }
-  public List<string> H5 { get; set; }
-  public List<string> H6 { get; set; }
-  public List<string> Links { get; set; }
-  public List<string> Images { get; set; }
-  public List<string> Scripts { get; set; }
-  public List<string> Styles { get; set; }
-  public List<string> Forms { get; set; }
-  public List<string> Inputs { get; set; }
-  public List<string> Lists { get; set; }
-  public List<string> Tables { get; set; }
+  public List<HTMLNodeModel> H1 { get; set; }
+  public List<HTMLNodeModel> H2 { get; set; }
+  public List<HTMLNodeModel> H3 { get; set; }
+  public List<HTMLNodeModel> H4 { get; set; }
+  public List<HTMLNodeModel> H5 { get; set; }
+  public List<HTMLNodeModel> H6 { get; set; }
+  public List<HTMLNodeModel> Links { get; set; }
+  public List<HTMLNodeModel> Images { get; set; }
+  public List<HTMLNodeModel> Scripts { get; set; }
+  public List<HTMLNodeModel> Styles { get; set; }
+  public List<HTMLNodeModel> Forms { get; set; }
+  public List<HTMLNodeModel> Inputs { get; set; }
+  public List<HTMLNodeModel> Lists { get; set; }
+  public List<HTMLNodeModel> Tables { get; set; }
   public string? Text { get; set; }
   public string? HTMLVersion { get; set; }
 
@@ -29,20 +29,20 @@ public class HTMLAnalyze
   {
     Errors = new List<HTMLError>();
     Keywords = new List<string>();
-    H1 = new List<string>();
-    H2 = new List<string>();
-    H3 = new List<string>();
-    H4 = new List<string>();
-    H5 = new List<string>();
-    H6 = new List<string>();
-    Links = new List<string>();
-    Images = new List<string>();
-    Scripts = new List<string>();
-    Styles = new List<string>();
-    Forms = new List<string>();
-    Inputs = new List<string>();
-    Lists = new List<string>();
-    Tables = new List<string>();
+    H1 = new List<HTMLNodeModel>();
+    H2 = new List<HTMLNodeModel>();
+    H3 = new List<HTMLNodeModel>();
+    H4 = new List<HTMLNodeModel>();
+    H5 = new List<HTMLNodeModel>();
+    H6 = new List<HTMLNodeModel>();
+    Links = new List<HTMLNodeModel>();
+    Images = new List<HTMLNodeModel>();
+    Scripts = new List<HTMLNodeModel>();
+    Styles = new List<HTMLNodeModel>();
+    Forms = new List<HTMLNodeModel>();
+    Inputs = new List<HTMLNodeModel>();
+    Lists = new List<HTMLNodeModel>();
+    Tables = new List<HTMLNodeModel>();
   }
 
 }
