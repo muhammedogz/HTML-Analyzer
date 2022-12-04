@@ -7,7 +7,7 @@ namespace html_analyzer.Controllers;
 
 
 [ApiController]
-[DisableCors]
+// allow all origins
 [Route("[controller]")]
 public class HTMLAnalyzerController : ControllerBase
 {

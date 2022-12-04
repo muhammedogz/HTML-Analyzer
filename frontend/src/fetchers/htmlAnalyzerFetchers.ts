@@ -1,8 +1,7 @@
-const LOCALHOST = 'https://localhost:8080/'
-const ENDPOINT = 'https://html-analyzer-backend.azurewebsites.net/'
 const HTML_ANALYZER = 'htmlanalyzer'
+
 const getApiEndpoint = (url: string) => {
-  return `${ENDPOINT}${url}`
+  return `${import.meta.env.VITE_API_ENDPOINT}${url}`
 }
 
 export const getAnalyzeFromHtml = async (html: string) => {
