@@ -1,13 +1,18 @@
+using html_analyzer.Models;
 using html_analyzer.Services;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 namespace html_analyzer.Controllers;
 
 
 [ApiController]
+[DisableCors]
 [Route("[controller]")]
 public class HTMLAnalyzerController : ControllerBase
 {
+
+  // disable cors
   [HttpGet()]
   public ActionResult GetHTML()
   {
@@ -49,12 +54,17 @@ public class HTMLAnalyzerController : ControllerBase
     return Ok(htmlAnalyze);
   }
 
+  // post method with json object and html field
   [HttpPost()]
-  public ActionResult PostHTML([FromBody] string html)
+  public ActionResult PostHTML([FromBody] HTMLPostModel htmlPostModel)
   {
+    if (htmlPostModel.HTML == null)
+    {
+      return BadRequest("HTML field is required");
+    }
+
     var htmlAnalyzerService = new HTMLAnalyzerService();
-    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML(html);
+    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML(htmlPostModel.HTML);
     return Ok(htmlAnalyze);
   }
-
 }

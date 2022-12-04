@@ -36,7 +36,7 @@ function HTMLEditor() {
       console.error(error);
       
     }
-  }, [])
+  }, [code])
 
   // useEffect(() => {
   //   getHtml();
