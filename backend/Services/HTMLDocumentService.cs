@@ -105,53 +105,38 @@ public class HTMLDocumentService
 
   public List<HTMLError> GetErrors()
   {
+    const string DOCTYPE = "<!DOCTYPE html>";
     var errors = new List<HTMLError>();
-    var htmlNodes = _htmlDocument.DocumentNode.SelectNodes("//html");
-    if (htmlNodes != null)
+    // check if there is a <!DOCTYPE html> tag
+    var doctypeValue = _htmlDocument.Text.Substring(0, DOCTYPE.Length > _htmlDocument.Text.Length ? _htmlDocument.Text.Length : DOCTYPE.Length);
+    if (!doctypeValue.Contains(DOCTYPE))
     {
-      foreach (var htmlNode in htmlNodes)
-      {
-        var version = htmlNode.Attributes["version"]?.Value;
-        if (version != null)
-        {
-          if (version != "5")
-          {
-            errors.Add(new HTMLError("HTML version is not HTML 5"));
-          }
-        }
-        else
-        {
-          errors.Add(new HTMLError("HTML version is not HTML 5"));
-        }
-      }
-    }
-    else
-    {
-      errors.Add(new HTMLError("HTML version is not HTML 5"));
+      errors.Add(new HTMLError("No DOCTYPE declaration found", "Add <!DOCTYPE html> to the top of the document to specify the document type"));
+      errors.Add(new HTMLError("HTML version is not HTML 5", "Add <!DOCTYPE html> to the top of the document to make sure the HTML version is HTML 5"));
     }
 
     var headNodes = _htmlDocument.DocumentNode.SelectNodes("//head");
     if (headNodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a head tag"));
+      errors.Add(new HTMLError("HTML does not contain a head tag", "Add a head tag to the document"));
     }
 
     var titleNodes = _htmlDocument.DocumentNode.SelectNodes("//title");
     if (titleNodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a title tag"));
+      errors.Add(new HTMLError("HTML does not contain a title tag", "Add a title tag to the document"));
     }
 
     var bodyNodes = _htmlDocument.DocumentNode.SelectNodes("//body");
     if (bodyNodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a body tag"));
+      errors.Add(new HTMLError("HTML does not contain a body tag", "Add a body tag to the document"));
     }
 
     var h1Nodes = _htmlDocument.DocumentNode.SelectNodes("//h1");
     if (h1Nodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a h1 tag"));
+      errors.Add(new HTMLError("HTML does not contain a h1 tag", "Add a h1 tag to the document"));
     }
 
     var htmlErrors = _htmlDocument.ParseErrors;
