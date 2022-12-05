@@ -65,6 +65,15 @@ public class HTMLAnalyzerController : ControllerBase
 
     var htmlAnalyzerService = new HTMLAnalyzerService();
     var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML(htmlPostModel.HTML);
-    return Ok(htmlAnalyze);
+
+
+    return Ok(new ResponseModel
+    {
+      Status = 200,
+      Data = htmlAnalyze,
+      Message = "HTML Analyzed"
+    });
+
+
   }
 }
