@@ -20,9 +20,10 @@ public class HTMLDocumentService
 
   public HTMLDocumentService(string url, bool isUrl)
   {
+    Console.WriteLine("heere");
+    HtmlWeb web = new HtmlWeb();
     _htmlDocument = new HtmlDocument();
-    // load html from url
-    _htmlDocument.LoadHtml(new HtmlWeb().Load(url).DocumentNode.OuterHtml);
+    _htmlDocument = web.Load(url);
   }
 
   public string GetHTML()

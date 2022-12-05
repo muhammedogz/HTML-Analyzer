@@ -16,7 +16,6 @@ public class HTMLAnalyzerController : ControllerBase
   [HttpGet()]
   public ActionResult GetHTML()
   {
-    var htmlAnalyzerService = new HTMLAnalyzerService();
     var html = @"<!DOCTYPE html>
 <html lang=""en"">
 <head>
@@ -50,7 +49,8 @@ public class HTMLAnalyzerController : ControllerBase
   </ul>
 </body>
 </html>";
-    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML(html);
+    var htmlAnalyzerService = new HTMLAnalyzerService(html);
+    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
     return Ok(htmlAnalyze);
   }
 
@@ -63,16 +63,30 @@ public class HTMLAnalyzerController : ControllerBase
       return BadRequest("HTML field is required");
     }
 
-    var htmlAnalyzerService = new HTMLAnalyzerService();
-    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML(htmlPostModel.HTML);
-
-
-    return Ok(new ResponseModel
+    if (htmlPostModel.IsUrl != null && htmlPostModel.IsUrl == true)
     {
-      Status = 200,
-      Data = htmlAnalyze,
-      Message = "HTML Analyzed"
-    });
+      var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML, true);
+      var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
+      return Ok(new ResponseModel
+      {
+        Status = 200,
+        Data = htmlAnalyze,
+        Message = "HTML Analyzed"
+      });
+    }
+    else
+    {
+      var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML);
+      var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
+      return Ok(new ResponseModel
+      {
+        Status = 200,
+        Data = htmlAnalyze,
+        Message = "HTML Analyzed"
+      });
+    }
+
+
 
 
   }

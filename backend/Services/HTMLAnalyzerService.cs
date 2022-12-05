@@ -5,15 +5,22 @@ using HtmlAgilityPack;
 using static html_analyzer.Services.HTMLDocumentService;
 public class HTMLAnalyzerService
 {
-  public HTMLAnalyzerService()
+  private readonly HTMLDocumentService _htmlDocumentService;
+  public HTMLAnalyzerService(string html)
   {
+    _htmlDocumentService = new HTMLDocumentService(html);
   }
 
-  public HTMLAnalyze AnalyzeHTML(string html)
+  public HTMLAnalyzerService(string url, bool isUrl)
+  {
+    _htmlDocumentService = new HTMLDocumentService(url, isUrl);
+  }
+
+  public HTMLAnalyze AnalyzeHTML()
   {
 
     var htmlAnalyze = new HTMLAnalyze();
-    var htmlDocumentService = new HTMLDocumentService(html);
+    var htmlDocumentService = _htmlDocumentService;
     htmlAnalyze.HTML = htmlDocumentService.GetHTML();
     htmlAnalyze.Title = htmlDocumentService.GetTitle();
     htmlAnalyze.Description = htmlDocumentService.GetDescription();
