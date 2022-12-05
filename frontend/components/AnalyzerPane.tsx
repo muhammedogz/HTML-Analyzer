@@ -1,18 +1,18 @@
-import { Stack } from '@mui/system';
+import { Stack, StackProps } from '@mui/material';
 
-interface IAnalyzerPaneProps {
+type IAnalyzerPaneProps = StackProps & {
   children: React.ReactNode;
-}
+};
 
-const AnalyzerPane = ({ children }: IAnalyzerPaneProps) => {
+const AnalyzerPane = ({ children, ...rest }: IAnalyzerPaneProps) => {
   return (
     <Stack
       sx={{
         background: 'white',
         borderRadius: '20px',
-        boxShadow: '0 0 15px 1px rgba(0, 0, 0, 0.4)',
-        padding: '20px 30px',
+        padding: '6px 12px',
       }}
+      {...rest}
     >
       {children}
     </Stack>
