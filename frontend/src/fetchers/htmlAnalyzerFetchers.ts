@@ -95,3 +95,14 @@ export const getAnalyzeFromHtml = async (html: string): Promise<Response<HTMlAna
   });
   return await response.json();
 };
+
+export const getAnalyzeFromUrl = async (html: string): Promise<Response<HTMlAnalyzerType>> => {
+  const response = await fetch(getApiEndpoint(HTML_ANALYZER), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ html, isUrl: true }),
+  });
+  return await response.json();
+};

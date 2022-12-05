@@ -8,6 +8,7 @@ import 'ace-builds/src-noconflict/ace';
 import AnalyzerPane from 'components/AnalyzerPane';
 import Header from 'components/Header';
 import InputMode from 'components/InputMode';
+import URLMode from 'components/URLMode';
 import { useState } from 'react';
 import SwipeableViews from 'react-swipeable-views';
 
@@ -66,7 +67,7 @@ function App() {
                 display: tabValue === 1 ? 'block' : 'none',
               }}
             >
-              <InputMode />
+              <URLMode />
             </Stack>
           </SwipeableViews>
         </Stack>

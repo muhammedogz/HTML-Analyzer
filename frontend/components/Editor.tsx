@@ -1,21 +1,55 @@
-import { Stack, useMediaQuery, useTheme } from '@mui/material';
+import { ChangeCircle, ChangeCircleTwoTone } from '@mui/icons-material';
+import { Button, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'prismjs/themes/prism-coy.css';
+import { useState } from 'react';
 import AceEditor from 'react-ace';
 
 type EditorProps = {
   code: string;
   setCode: (value: string) => void;
+  initialReadOnly?: boolean;
 };
 
-const Editor = ({ code, setCode }: EditorProps) => {
+const Editor = ({ code, setCode, initialReadOnly = false }: EditorProps) => {
+  const [readOnly, setReadOnly] = useState(initialReadOnly);
   const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'));
 
   return (
-    <Stack>
+    <Stack
+      sx={{
+        position: 'relative',
+      }}
+    >
+      <Stack
+        sx={{
+          position: 'absolute',
+          top: '0px',
+          right: '0px',
+          zIndex: 199,
+          // make a cute gradient with red and magenta
+          background: 'linear-gradient(90deg, #5ca2e8, #ff00ff)',
+          borderRadius: '0px 0px 0px 10px',
+          boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.75)',
+        }}
+      >
+        <Button
+          onClick={() => {
+            setReadOnly(!readOnly);
+          }}
+        >
+          <Stack flexDirection="row" alignItems="center" gap={1} color="white">
+            <Typography fontSize="12px">{readOnly ? 'Enable' : 'Disable'} Editor</Typography>
+            {/* give a transition effect on change readOnly with icons */}
+            {readOnly ? <ChangeCircleTwoTone fontSize="small" /> : <ChangeCircle fontSize="small" />}
+          </Stack>
+        </Button>
+      </Stack>
+
       <AceEditor
+        readOnly={readOnly}
         wrapEnabled
         placeholder="Enter your HTML"
         mode="html"
@@ -34,9 +68,9 @@ const Editor = ({ code, setCode }: EditorProps) => {
           tabSize: 2,
         }}
         style={{
-          width: isDesktop ? '700px' : '85vw',
+          width: isDesktop ? '600px' : '85vw',
         }}
-        height={isDesktop ? '500px' : '50vh'}
+        height={isDesktop ? '300px' : '40vh'}
       />
     </Stack>
   );
