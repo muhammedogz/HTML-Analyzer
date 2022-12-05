@@ -35,11 +35,9 @@ function InputMode() {
     <Stack gap={3} id="html-editor-stack">
       <Stack gap={3}>
         <AnalyzerPane gap={2}>
-          <FormLabel htmlFor="html-editor">
             <Typography fontWeight={700} fontSize="20px" pl="10px">
               Enter HTML Input
             </Typography>
-          </FormLabel>
           <Editor code={code} setCode={setCode} />
         </AnalyzerPane>
         <AnalyzerPane justifyContent="center" alignItems="center">

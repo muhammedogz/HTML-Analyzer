@@ -24,6 +24,9 @@ const Errors = ({ htmlAnalyze, setHtmlAnalyze }: ErrorsProps) => {
         }}
       >
         <AnalyzerPane gap={1}>
+          <Typography fontWeight={700} fontSize="20px">
+            Errors
+          </Typography>
           <Stack>
             <IconButton
               id="close-button"
