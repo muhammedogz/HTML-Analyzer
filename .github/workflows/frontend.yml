@@ -3,7 +3,7 @@ name: Frontend - Build and Deploy
 on:
   push:
     tags:
-      - 'frontend/*'
+      - "frontend/*"
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
 
       - name: Build project
         working-directory: ./frontend
-        run: npm run build
+        run: npm run build --legacy-peer-deps
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
