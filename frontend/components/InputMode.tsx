@@ -1,8 +1,9 @@
+import { DoneOutlined } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Fade, FormLabel, Stack, Typography } from '@mui/material';
+import { Fade, FormLabel, IconButton, Stack, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
 import Editor from 'components/Editor';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getAnalyzeFromHtml, HTMlAnalyzerType } from 'src/fetchers/htmlAnalyzerFetchers';
 
 function InputMode() {
@@ -22,6 +23,12 @@ function InputMode() {
       console.error(error);
     }
   }, [code]);
+
+  useEffect(() => {
+    if (htmlAnalyze && loading) {
+      setHtmlAnalyze(null);
+    }
+  }, [loading]);
 
   return (
     <Stack gap={3} id="html-editor-stack" flexDirection="row">
@@ -48,9 +55,30 @@ function InputMode() {
           </LoadingButton>
         </AnalyzerPane>
       </Stack>
-      <Fade in={htmlAnalyze !== null && htmlAnalyze.errors.length > 0} timeout={750}>
+      <Fade
+        in={htmlAnalyze !== null && htmlAnalyze.errors.length > 0}
+        timeout={{
+          enter: 750,
+          exit: 150,
+        }}
+      >
         <Stack>
-          <AnalyzerPane>
+          <AnalyzerPane gap={1}>
+            <Stack p={1}>
+              <IconButton
+                id="close-button"
+                onClick={() => {
+                  setHtmlAnalyze(null);
+                }}
+                sx={{
+                  position: 'absolute',
+                  top: '0px',
+                  right: '0px',
+                }}
+              >
+                <DoneOutlined />
+              </IconButton>
+            </Stack>
             {htmlAnalyze?.errors.map((error, index) => {
               return (
                 <Typography key={index} color="red">
