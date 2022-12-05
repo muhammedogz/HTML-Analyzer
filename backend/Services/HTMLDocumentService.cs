@@ -107,11 +107,11 @@ public class HTMLDocumentService
   {
     const string DOCTYPE = "<!DOCTYPE html>";
     var errors = new List<HTMLError>();
-    // check if there is a <!DOCTYPE html> tag
-    var doctypeValue = _htmlDocument.Text.Substring(0, DOCTYPE.Length > _htmlDocument.Text.Length ? _htmlDocument.Text.Length : DOCTYPE.Length);
+
+    var doctypeValue = _htmlDocument.DocumentNode.OuterHtml.TrimStart().TrimEnd().Replace("\r", "").Replace("\t", "").Substring(0, DOCTYPE.Length > _htmlDocument.Text.Length ? _htmlDocument.Text.Length : DOCTYPE.Length);
     if (!doctypeValue.Contains(DOCTYPE))
     {
-      errors.Add(new HTMLError("No DOCTYPE declaration found", "Add <!DOCTYPE html> to the top of the document to specify the document type"));
+      errors.Add(new HTMLError("HTML must start with a DOCTYPE declaration", "Add <!DOCTYPE html> to the top of the document"));
       errors.Add(new HTMLError("HTML version is not HTML 5", "Add <!DOCTYPE html> to the top of the document to make sure the HTML version is HTML 5"));
     }
 
@@ -146,10 +146,10 @@ public class HTMLDocumentService
       {
         errors.Add(new HTMLError(htmlError.Code.ToString()
           , htmlError.Reason
-          , htmlError.Line.ToString()
-          , htmlError.LinePosition.ToString()
+          , htmlError.Line
+          , htmlError.LinePosition
           , htmlError.SourceText
-          , htmlError.StreamPosition.ToString()));
+          , htmlError.StreamPosition));
 
       }
     }
