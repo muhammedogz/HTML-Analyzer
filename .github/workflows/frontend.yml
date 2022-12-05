@@ -20,13 +20,14 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
+        uses: bahmutov/npm-install@v1
         with:
           working-directory: frontend
-        uses: bahmutov/npm-install@v1
+          install-command: npm ci --legacy-peer-deps
 
       - name: Build project
         working-directory: ./frontend
-        run: npm run build --legacy-peer-deps
+        run: npm run build
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
