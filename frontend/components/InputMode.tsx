@@ -32,7 +32,7 @@ function InputMode() {
   }, [loading]);
 
   return (
-    <Stack gap={3} id="html-editor-stack" flexDirection="row">
+    <Stack gap={3} id="html-editor-stack">
       <Stack gap={3}>
         <AnalyzerPane gap={2}>
           <FormLabel htmlFor="html-editor">
@@ -56,7 +56,7 @@ function InputMode() {
           </LoadingButton>
         </AnalyzerPane>
       </Stack>
-      <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
+      {htmlAnalyze && <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />}
     </Stack>
   );
 }
