@@ -52,7 +52,7 @@ public class HTMLAnalyzerController : ControllerBase
   }
 
   // post method with json object and html field
-  [HttpPost()]
+  [HttpPost("analyze-html")]
   public ActionResult PostHTML([FromBody] HTMLPostModel htmlPostModel)
   {
     if (htmlPostModel.HTML == null)
@@ -60,27 +60,34 @@ public class HTMLAnalyzerController : ControllerBase
       return BadRequest("HTML field is required");
     }
 
-    if (htmlPostModel.IsUrl != null && htmlPostModel.IsUrl == true)
+    var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML);
+    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
+    return Ok(new ResponseModel
     {
-      var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML, true);
-      var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
-      return Ok(new ResponseModel
-      {
-        Status = 200,
-        Data = htmlAnalyze,
-        Message = "HTML Analyzed"
-      });
-    }
-    else
+      Status = 200,
+      Data = htmlAnalyze,
+      Message = "HTML Analyzed"
+    });
+
+  }
+
+  // new api endpoint
+  // post /html-analyzer/analyze-url
+  [HttpPost("analyze-url")]
+  public ActionResult PostURL([FromBody] HTMLPostModel htmlPostModel)
+  {
+    if (htmlPostModel.HTML == null)
     {
-      var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML);
-      var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
-      return Ok(new ResponseModel
-      {
-        Status = 200,
-        Data = htmlAnalyze,
-        Message = "HTML Analyzed"
-      });
+      return BadRequest("URL field is required");
     }
+
+    var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML, true);
+    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
+    return Ok(new ResponseModel
+    {
+      Status = 200,
+      Data = htmlAnalyze,
+      Message = "HTML Analyzed"
+    });
   }
 }

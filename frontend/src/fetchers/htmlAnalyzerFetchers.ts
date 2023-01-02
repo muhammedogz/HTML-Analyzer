@@ -1,4 +1,6 @@
-const HTML_ANALYZER = 'htmlanalyzer';
+const HTML_ANALYZER_PREFIX = 'htmlanalyzer';
+const ANALYZE_HTML = `${HTML_ANALYZER_PREFIX}/analyze-html`;
+const ANALYZE_URL = `${HTML_ANALYZER_PREFIX}/analyze-url`;
 
 const getApiEndpoint = (url: string) => {
   return `${import.meta.env.VITE_API_ENDPOINT}${url}`;
@@ -86,7 +88,7 @@ type Response<T> = {
 };
 
 export const getAnalyzeFromHtml = async (html: string): Promise<Response<HTMlAnalyzerType>> => {
-  const response = await fetch(getApiEndpoint(HTML_ANALYZER), {
+  const response = await fetch(getApiEndpoint(ANALYZE_HTML), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -97,7 +99,7 @@ export const getAnalyzeFromHtml = async (html: string): Promise<Response<HTMlAna
 };
 
 export const getAnalyzeFromUrl = async (html: string): Promise<Response<HTMlAnalyzerType>> => {
-  const response = await fetch(getApiEndpoint(HTML_ANALYZER), {
+  const response = await fetch(getApiEndpoint(ANALYZE_URL), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
