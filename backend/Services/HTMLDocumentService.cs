@@ -20,7 +20,6 @@ public class HTMLDocumentService
 
   public HTMLDocumentService(string url, bool isUrl)
   {
-    Console.WriteLine("heere");
     HtmlWeb web = new HtmlWeb();
     _htmlDocument = new HtmlDocument();
     _htmlDocument = web.Load(url);
@@ -145,13 +144,14 @@ public class HTMLDocumentService
     {
       foreach (var htmlError in htmlErrors)
       {
-        errors.Add(new HTMLError(htmlError.Code.ToString()
-          , htmlError.Reason
-          , htmlError.Line
-          , htmlError.LinePosition
-          , htmlError.SourceText
-          , htmlError.StreamPosition));
-
+        errors.Add(new HTMLError(
+        code: htmlError.Code.ToString(),
+        reason: htmlError.Reason,
+        line: htmlError.Line,
+        linePosition: htmlError.LinePosition,
+        sourceText: htmlError.SourceText,
+        streamPosition: htmlError.StreamPosition
+        ));
       }
     }
 

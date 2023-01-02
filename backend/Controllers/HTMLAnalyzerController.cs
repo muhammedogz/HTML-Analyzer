@@ -87,7 +87,7 @@ public class HTMLAnalyzerController : ControllerBase
     {
       Status = 200,
       Data = htmlAnalyze,
-      Message = "HTML Analyzed"
+      Message = "URL Analyzed"
     });
   }
 }
