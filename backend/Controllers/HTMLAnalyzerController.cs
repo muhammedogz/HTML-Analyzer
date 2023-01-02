@@ -1,7 +1,5 @@
 using html_analyzer.Models;
 using html_analyzer.Services;
-using HtmlAgilityPack;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 namespace html_analyzer.Controllers;
 
@@ -12,7 +10,6 @@ namespace html_analyzer.Controllers;
 public class HTMLAnalyzerController : ControllerBase
 {
 
-  // disable cors
   [HttpGet()]
   public ActionResult GetHTML()
   {
@@ -85,9 +82,5 @@ public class HTMLAnalyzerController : ControllerBase
         Message = "HTML Analyzed"
       });
     }
-
-
-
-
   }
 }
