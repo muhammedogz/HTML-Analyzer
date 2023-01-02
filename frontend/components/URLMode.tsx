@@ -64,7 +64,7 @@ const URLMode = () => {
       )}
       {showEditor && (
         <AnalyzerPane>
-          <Editor code={code} setCode={setCode} initialReadOnly={true} />
+          <Editor code={code} setCode={setCode} initialReadOnly />
         </AnalyzerPane>
       )}
     </Stack>
