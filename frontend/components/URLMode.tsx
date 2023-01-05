@@ -58,7 +58,7 @@ const URLMode = () => {
               setShowEditor(!showEditor);
             }}
           >
-            <Typography>{showEditor ? 'Hide fetched HTML' : 'Show fetched HTML'}</Typography>
+            <Typography>{showEditor ? 'Hide fetched HTML text' : 'Show fetched HTML'}</Typography>
           </Button>
         </AnalyzerPane>
       )}
