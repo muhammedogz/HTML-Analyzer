@@ -159,12 +159,30 @@ public class HTMLDocumentService
   }
 
   // solutions for errors
-  public String FixDoctypeError(HTMLError error) {
-    var html = _htmlDocument.DocumentNode.OuterHtml;
-    var doctype = "<!DOCTYPE html>";
-    var index = html.IndexOf(error.SourceText);
-    var newHtml = html.Insert(index, doctype);
-    return newHtml;
+  public void fixDoctypeError()
+  {
+    var doctypeValue = _htmlDocument.DocumentNode.OuterHtml.TrimStart().TrimEnd().Replace("\r", "").Replace("\t", "").Substring(0, 15);
+    if (!doctypeValue.Contains("<!DOCTYPE html>"))
+    {
+      var html = _htmlDocument.DocumentNode.OuterHtml;
+      html = html.Insert(0, "<!DOCTYPE html>");
+      _htmlDocument.LoadHtml(html);
+    }
   }
+
+  public void fixHeadError()
+  {
+    var headNodes = _htmlDocument.DocumentNode.SelectNodes("//head");
+    if (headNodes == null)
+    {
+      var html = _htmlDocument.DocumentNode.OuterHtml;
+      html = html.Insert(0, "<head></head>");
+      _htmlDocument.LoadHtml(html);
+    }
+  }
+
+  
+
+
 
 }
