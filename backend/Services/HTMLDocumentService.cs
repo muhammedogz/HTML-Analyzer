@@ -181,7 +181,38 @@ public class HTMLDocumentService
     }
   }
 
-  
+  public void fixTitleError()
+  {
+    var titleNodes = _htmlDocument.DocumentNode.SelectNodes("//title");
+    if (titleNodes == null)
+    {
+      var html = _htmlDocument.DocumentNode.OuterHtml;
+      html = html.Insert(0, "<title></title>");
+      _htmlDocument.LoadHtml(html);
+    }
+  }
+
+  public void fixBodyError()
+  {
+    var bodyNodes = _htmlDocument.DocumentNode.SelectNodes("//body");
+    if (bodyNodes == null)
+    {
+      var html = _htmlDocument.DocumentNode.OuterHtml;
+      html = html.Insert(0, "<body></body>");
+      _htmlDocument.LoadHtml(html);
+    }
+  }
+
+  public void fixH1Error()
+  {
+    var h1Nodes = _htmlDocument.DocumentNode.SelectNodes("//h1");
+    if (h1Nodes == null)
+    {
+      var html = _htmlDocument.DocumentNode.OuterHtml;
+      html = html.Insert(0, "<h1></h1>");
+      _htmlDocument.LoadHtml(html);
+    }
+  }
 
 
 
