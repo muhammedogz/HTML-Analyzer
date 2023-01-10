@@ -157,4 +157,14 @@ public class HTMLDocumentService
 
     return errors;
   }
+
+  // solutions for errors
+  public String FixDoctypeError(HTMLError error) {
+    var html = _htmlDocument.DocumentNode.OuterHtml;
+    var doctype = "<!DOCTYPE html>";
+    var index = html.IndexOf(error.SourceText);
+    var newHtml = html.Insert(index, doctype);
+    return newHtml;
+  }
+
 }
