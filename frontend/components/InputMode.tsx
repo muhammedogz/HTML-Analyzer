@@ -5,14 +5,15 @@ import DiffEditor from 'components/DiffEditor';
 import Editor from 'components/Editor';
 import Errors from 'components/Errors';
 import { useCallback, useEffect, useState } from 'react';
-import { getAnalyzeFromHtml, getFixHtmlAll, HTMlAnalyzerType } from 'src/fetchers/htmlAnalyzerFetchers';
+import { getAnalyzeFromHtml, getFixHtmlAll, HtmlAnalyzerResponseType } from 'src/fetchers/htmlAnalyzerFetchers';
 
 function InputMode() {
   const [code, setCode] = useState('<h1>Hello World!</h1>');
-  const [htmlAnalyze, setHtmlAnalyze] = useState<HTMlAnalyzerType | null>(null);
+  const [htmlAnalyze, setHtmlAnalyze] = useState<HtmlAnalyzerResponseType | null>(null);
   const [fixedHtml, setFixedHtml] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showFixedHtmlEditor, setShowFixedHtmlEditor] = useState(false);
+  const [loadingFixButton, setLoadingFixButton] = useState(false);
+  const [showDiffEditor, setShowDiffEditor] = useState(false);
 
   const sendHtml = useCallback(async () => {
     try {
@@ -29,9 +30,11 @@ function InputMode() {
 
   const getFixedHtml = useCallback(async () => {
     try {
+      setLoadingFixButton(true);
       const response = await getFixHtmlAll(code);
       if (response.status === 200) {
         setFixedHtml(response.data.html);
+        setLoadingFixButton(false);
       }
     } catch (error) {
       console.error(error);
@@ -69,11 +72,19 @@ function InputMode() {
         </AnalyzerPane>
       </Stack>
       {htmlAnalyze && (
-        <Stack>
+        <Stack gap={3}>
+          <AnalyzerPane>
+            <Typography fontWeight={700} fontSize="20px" textAlign="center">
+              Your HTML Score
+            </Typography>
+            <Typography fontWeight={700} fontSize="50px" textAlign="center">
+              {htmlAnalyze.rate}
+            </Typography>
+          </AnalyzerPane>
           <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
           <AnalyzerPane justifyContent="center" alignItems="center">
             <LoadingButton
-              loading={false}
+              loading={loadingFixButton}
               color="secondary"
               variant="contained"
               onClick={getFixedHtml}
@@ -90,14 +101,14 @@ function InputMode() {
         <AnalyzerPane>
           <Button
             onClick={() => {
-              setShowFixedHtmlEditor(!showFixedHtmlEditor);
+              setShowDiffEditor(!showDiffEditor);
             }}
           >
-            <Typography>{showFixedHtmlEditor ? 'Hide Fixed HTML content' : 'Show Fixed HTML'}</Typography>
+            <Typography>{showDiffEditor ? 'Hide Fixed HTML content' : 'Show Fixed HTML'}</Typography>
           </Button>
         </AnalyzerPane>
       )}
-      {showFixedHtmlEditor && (
+      {showDiffEditor && (
         <AnalyzerPane>
           <DiffEditor code={code} setCode={setCode} otherCode={fixedHtml} setOtherCode={setFixedHtml} initialReadOnly />
         </AnalyzerPane>

@@ -2,11 +2,11 @@ import { DoneOutlined } from '@mui/icons-material';
 import { Fade, IconButton, Stack, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
 import { Dispatch, SetStateAction } from 'react';
-import { HTMlAnalyzerType } from 'src/fetchers/htmlAnalyzerFetchers';
+import { HtmlAnalyzerResponseType } from 'src/fetchers/htmlAnalyzerFetchers';
 
 type ErrorsProps = {
-  htmlAnalyze: HTMlAnalyzerType | null;
-  setHtmlAnalyze: Dispatch<SetStateAction<HTMlAnalyzerType | null>>;
+  htmlAnalyze: HtmlAnalyzerResponseType | null;
+  setHtmlAnalyze: Dispatch<SetStateAction<HtmlAnalyzerResponseType | null>>;
 };
 
 const Errors = ({ htmlAnalyze, setHtmlAnalyze }: ErrorsProps) => {

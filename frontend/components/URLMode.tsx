@@ -1,10 +1,11 @@
 import { LoadingButton } from '@mui/lab';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
+import DiffEditor from 'components/DiffEditor';
 import Editor from 'components/Editor';
 import Errors from 'components/Errors';
 import { useCallback, useState } from 'react';
-import { getAnalyzeFromUrl, HTMlAnalyzerType } from 'src/fetchers/htmlAnalyzerFetchers';
+import { getAnalyzeFromUrl, getFixHtmlAll, HtmlAnalyzerResponseType } from 'src/fetchers/htmlAnalyzerFetchers';
 
 const URLRegexp = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
 
@@ -13,7 +14,10 @@ const URLMode = () => {
   const [showEditor, setShowEditor] = useState(false);
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState('');
-  const [htmlAnalyze, setHtmlAnalyze] = useState<HTMlAnalyzerType | null>(null);
+  const [fixedHtml, setFixedHtml] = useState('');
+  const [htmlAnalyze, setHtmlAnalyze] = useState<HtmlAnalyzerResponseType | null>(null);
+  const [loadingFixButton, setLoadingFixButton] = useState(false);
+  const [showDiffEditor, setShowDiffEditor] = useState(false);
 
   const getHtml = useCallback(async () => {
     try {
@@ -29,8 +33,21 @@ const URLMode = () => {
     }
   }, [url]);
 
+  const getFixedHtml = useCallback(async () => {
+    try {
+      setLoadingFixButton(true);
+      const response = await getFixHtmlAll(code);
+      if (response.status === 200) {
+        setFixedHtml(response.data.html);
+        setLoadingFixButton(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [code]);
+
   return (
-    <Stack gap={4} minWidth={{ xs: '85vw', md: '600px' }}>
+    <Stack gap={4} minWidth={{ xs: '85vw', md: '800px' }}>
       <Stack gap={2}>
         <AnalyzerPane>
           <TextField label="URL" onChange={(e) => setUrl(e.target.value)} />
@@ -50,7 +67,32 @@ const URLMode = () => {
           </LoadingButton>
         </AnalyzerPane>
       </Stack>
-      {htmlAnalyze && <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />}
+      {htmlAnalyze && (
+        <Stack gap={3}>
+          <AnalyzerPane>
+            <Typography fontWeight={700} fontSize="20px" textAlign="center">
+              Your HTML Score
+            </Typography>
+            <Typography fontWeight={700} fontSize="50px" textAlign="center">
+              {htmlAnalyze.rate}
+            </Typography>
+          </AnalyzerPane>
+          <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
+          <AnalyzerPane justifyContent="center" alignItems="center">
+            <LoadingButton
+              loading={loadingFixButton}
+              color="secondary"
+              variant="contained"
+              onClick={getFixedHtml}
+              sx={{
+                width: '300px',
+              }}
+            >
+              Fix your HTML!
+            </LoadingButton>
+          </AnalyzerPane>
+        </Stack>
+      )}
       {code.length > 0 && (
         <AnalyzerPane>
           <Button
@@ -65,6 +107,22 @@ const URLMode = () => {
       {showEditor && (
         <AnalyzerPane>
           <Editor code={code} setCode={setCode} initialReadOnly />
+        </AnalyzerPane>
+      )}
+      {fixedHtml.length > 0 && (
+        <AnalyzerPane>
+          <Button
+            onClick={() => {
+              setShowDiffEditor(!showDiffEditor);
+            }}
+          >
+            <Typography>{showDiffEditor ? 'Hide Fixed HTML content' : 'Show Fixed HTML'}</Typography>
+          </Button>
+        </AnalyzerPane>
+      )}
+      {showDiffEditor && (
+        <AnalyzerPane>
+          <DiffEditor code={code} setCode={setCode} otherCode={fixedHtml} setOtherCode={setFixedHtml} initialReadOnly />
         </AnalyzerPane>
       )}
     </Stack>

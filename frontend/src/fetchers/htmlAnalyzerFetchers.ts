@@ -7,83 +7,84 @@ const getApiEndpoint = (url: string) => {
   return `${import.meta.env.VITE_API_ENDPOINT}${url}`;
 };
 
-type HTMLAttributeType = {
-  name: string;
-  value: string;
-};
+enum ErrorLevelEnums {
+  ERROR,
+  WARNING,
+  SEO,
+  ACCESSIBILITY,
+}
 
-// public HTMLError(string? code, string? reason, string? line, string? linePosition, string? sourceText, string? streamPosition)
-//     {
-//       Code = code;
-//       Reason = reason;
-//       Line = line;
-//       LinePosition = linePosition;
-//       SourceText = sourceText;
-//       StreamPosition = streamPosition;
-//     }
+enum ErrorEnums {
+  // Summary: A tag was not closed.
+  TAG_NOT_CLOSED,
+  //
+  // Summary: A tag was not opened.
+  TAG_NOT_OPENED,
+
+  // Summary: There is a charset mismatch between stream and declared (META) encoding.
+  CHARSET_MISMATCH,
+
+  // Summary: An end tag was not required.
+  END_TAG_NOT_REQUIRED,
+
+  // Summary: An end tag is invalid at this position.
+  END_TAG_INVALID,
+
+  // Summary: The DOCTYPE declaration was invalid or not HTML5.
+  DOCTYPE_INVALID,
+
+  // Summary: HTML Tag is missing
+  HTML_TAG_MISSING,
+
+  // Summary: Head Tag is missing
+  HEAD_TAG_MISSING,
+
+  // Summary: Title Tag is missing
+  TITLE_TAG_MISSING,
+
+  // Summary: Body Tag is missing
+  BODY_TAG_MISSING,
+
+  // Summary: H1 Tag is missing
+  H1_TAG_MISSING,
+
+  // Summary:
+  // Input type attribute is invalid.
+  INPUT_TYPE_INVALID,
+
+  // Summary: An attribute was duplicated.
+  ATTRIBUTE_DUPLICATE,
+}
 
 type ErrorType = {
-  code: string;
+  errorLevel: ErrorLevelEnums;
+  errorType: ErrorEnums;
   reason: string;
+  solution: string;
+  code: string;
   line: number;
   linePosition: number;
   sourceText: string;
   streamPosition: number;
-  solution: string;
 };
 
-type HTMLNodeType = {
-  name: string;
-  innerHTML: string;
-  innerText: string;
-  outerHTML: string;
-  attributes: HTMLAttributeType[];
-};
+// type HTMLAttributeType = {
+//   name: string;
+//   value: string;
+// };
 
-export type HTMlAnalyzerType = {
+// type HTMLNodeType = {
+//   name: string;
+//   innerHTML: string;
+//   innerText: string;
+//   outerHTML: string;
+//   attributes: HTMLAttributeType[];
+// };
+
+export type HtmlAnalyzerResponseType = {
   errors: ErrorType[];
   html: string;
-  description: string | null;
-  title: string | null;
-  text: string | null;
-  htmlVersion: string | null;
-  h1: HTMLNodeType[];
-  h2: HTMLNodeType[];
-  h3: HTMLNodeType[];
-  h4: HTMLNodeType[];
-  h5: HTMLNodeType[];
-  h6: HTMLNodeType[];
-  links: HTMLNodeType[];
-  images: HTMLNodeType[];
-  forms: HTMLNodeType[];
-  scripts: HTMLNodeType[];
-  styles: HTMLNodeType[];
-  inputs: HTMLNodeType[];
-  tables: HTMLNodeType[];
-  meta: HTMLNodeType[];
-  buttons: HTMLNodeType[];
-  lists: HTMLNodeType[];
-  divs: HTMLNodeType[];
-  spans: HTMLNodeType[];
-  paragraphs: HTMLNodeType[];
-  headers: HTMLNodeType[];
-  footers: HTMLNodeType[];
-  navs: HTMLNodeType[];
-  asides: HTMLNodeType[];
-  sections: HTMLNodeType[];
-  articles: HTMLNodeType[];
-  main: HTMLNodeType[];
-  details: HTMLNodeType[];
-  summary: HTMLNodeType[];
-  figures: HTMLNodeType[];
-  figCaptions: HTMLNodeType[];
-  iframes: HTMLNodeType[];
-  labels: HTMLNodeType[];
-  selects: HTMLNodeType[];
-};
-
-type FixHtmlAllResponseType = {
-  html: string;
+  rate: number;
 };
 
 type Response<T> = {
@@ -92,7 +93,7 @@ type Response<T> = {
   status: number;
 };
 
-export const getAnalyzeFromHtml = async (html: string): Promise<Response<HTMlAnalyzerType>> => {
+export const getAnalyzeFromHtml = async (html: string): Promise<Response<HtmlAnalyzerResponseType>> => {
   const response = await fetch(getApiEndpoint(ANALYZE_HTML), {
     method: 'POST',
     headers: {
@@ -103,7 +104,7 @@ export const getAnalyzeFromHtml = async (html: string): Promise<Response<HTMlAna
   return await response.json();
 };
 
-export const getAnalyzeFromUrl = async (html: string): Promise<Response<HTMlAnalyzerType>> => {
+export const getAnalyzeFromUrl = async (html: string): Promise<Response<HtmlAnalyzerResponseType>> => {
   const response = await fetch(getApiEndpoint(ANALYZE_URL), {
     method: 'POST',
     headers: {
@@ -114,7 +115,7 @@ export const getAnalyzeFromUrl = async (html: string): Promise<Response<HTMlAnal
   return await response.json();
 };
 
-export const getFixHtmlAll = async (html: string): Promise<Response<FixHtmlAllResponseType>> => {
+export const getFixHtmlAll = async (html: string): Promise<Response<HtmlAnalyzerResponseType>> => {
   const response = await fetch(getApiEndpoint(FIX_HTML_ALL), {
     method: 'POST',
     headers: {
