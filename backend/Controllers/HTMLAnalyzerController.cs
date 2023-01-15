@@ -61,7 +61,7 @@ public class HTMLAnalyzerController : ControllerBase
     }
 
     var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML);
-    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
+    var htmlAnalyze = (HTMLAnalyzeSimple)htmlAnalyzerService.AnalyzeHTML();
     return Ok(new ResponseModel
     {
       Status = 200,
@@ -82,7 +82,7 @@ public class HTMLAnalyzerController : ControllerBase
     }
 
     var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML, true);
-    var htmlAnalyze = (HTMLAnalyzeSimple) htmlAnalyzerService.AnalyzeHTML();
+    var htmlAnalyze = (HTMLAnalyzeSimple)htmlAnalyzerService.AnalyzeHTML();
     return Ok(new ResponseModel
     {
       Status = 200,
@@ -93,29 +93,22 @@ public class HTMLAnalyzerController : ControllerBase
 
 
   // post /html-analyzer/fix-html
-  [HttpPost("fix-html")]
+  [HttpPost("fix-html-all")]
   public ActionResult FiHTML([FromBody] FixHtmlRequestModel req)
   {
     if (req.HTML == null)
     {
-      return BadRequest("URL field is required");
-    }
-    if (req.Errors == null)
-    {
-      return BadRequest("Errors field is required");
+      return BadRequest("HTML field is required");
     }
 
-    Console.WriteLine("htmlErrors: " + req.Errors);
-    // log errors in loop
-    foreach (var error in req.Errors)
-    {
-      Console.WriteLine("error: " + error);
-    }
+
+    var htmlAnalyzerService = new HTMLAnalyzerService(req.HTML);
+    var htmlAnalyze = htmlAnalyzerService.FixErrors();
 
     return Ok(new ResponseModel
     {
       Status = 200,
-      Data = req.Errors,
+      Data = htmlAnalyze,
       Message = "URL Analyzed"
     });
   }

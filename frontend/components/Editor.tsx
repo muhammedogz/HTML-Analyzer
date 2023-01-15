@@ -26,13 +26,13 @@ const Editor = ({ code, setCode, initialReadOnly = false }: EditorProps) => {
       <Stack
         sx={{
           position: 'absolute',
-          top: '0px',
+          bottom: '0px',
           right: '0px',
+          opacity: 0.8,
           zIndex: 199,
           // make a cute gradient with red and magenta
           background: 'linear-gradient(90deg, #5ca2e8, #ff00ff)',
-          borderRadius: '0px 0px 0px 10px',
-          boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.75)',
+          borderRadius: '10px 0px 0px 0px',
         }}
       >
         <Button

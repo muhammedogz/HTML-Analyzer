@@ -1,6 +1,7 @@
 const HTML_ANALYZER_PREFIX = 'htmlanalyzer';
 const ANALYZE_HTML = `${HTML_ANALYZER_PREFIX}/analyze-html`;
 const ANALYZE_URL = `${HTML_ANALYZER_PREFIX}/analyze-url`;
+const FIX_HTML_ALL = `${HTML_ANALYZER_PREFIX}/fix-html-all`;
 
 const getApiEndpoint = (url: string) => {
   return `${import.meta.env.VITE_API_ENDPOINT}${url}`;
@@ -81,6 +82,10 @@ export type HTMlAnalyzerType = {
   selects: HTMLNodeType[];
 };
 
+type FixHtmlAllResponseType = {
+  html: string;
+};
+
 type Response<T> = {
   data: T;
   message: string;
@@ -105,6 +110,17 @@ export const getAnalyzeFromUrl = async (html: string): Promise<Response<HTMlAnal
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ html, isUrl: true }),
+  });
+  return await response.json();
+};
+
+export const getFixHtmlAll = async (html: string): Promise<Response<FixHtmlAllResponseType>> => {
+  const response = await fetch(getApiEndpoint(FIX_HTML_ALL), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ html }),
   });
   return await response.json();
 };

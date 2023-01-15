@@ -1,10 +1,13 @@
 namespace html_analyzer.Services;
 
+using html_analyzer.Enums;
 using html_analyzer.Models;
 using HtmlAgilityPack;
 
 public class HTMLDocumentService
 {
+  const string DOCTYPE_VALUE = "<!DOCTYPE html>";
+
   private readonly HtmlDocument _htmlDocument;
 
   public HTMLDocumentService(string html)
@@ -103,40 +106,125 @@ public class HTMLDocumentService
     return htmlVersion;
   }
 
-  public List<HTMLError> GetErrors()
+  //   public enum ErrorLevelEnums
+  // {
+  //   WARNING,
+  //   ERROR,
+  //   SEO,
+  //   ACCESSIBILITY,
+
+  // }
+
+  public HTMLError? getDocTypeError()
   {
-    const string DOCTYPE = "<!DOCTYPE html>";
-    var errors = new List<HTMLError>();
-
-    var doctypeValue = _htmlDocument.DocumentNode.OuterHtml.TrimStart().TrimEnd().Replace("\r", "").Replace("\t", "").Substring(0, DOCTYPE.Length > _htmlDocument.Text.Length ? _htmlDocument.Text.Length : DOCTYPE.Length);
-    if (!doctypeValue.Contains(DOCTYPE))
+    var doctypeValue = _htmlDocument.DocumentNode.OuterHtml.TrimStart().TrimEnd().Replace("\r", "").Replace("\t", "").Substring(0, DOCTYPE_VALUE.Length > _htmlDocument.Text.Length ? _htmlDocument.Text.Length : DOCTYPE_VALUE.Length);
+    if (!doctypeValue.Contains(DOCTYPE_VALUE))
     {
-      errors.Add(new HTMLError("HTML must start with a DOCTYPE declaration", "Add <!DOCTYPE html> to the top of the document"));
-      errors.Add(new HTMLError("HTML version is not HTML 5", "Add <!DOCTYPE html> to the top of the document to make sure the HTML version is HTML 5"));
+      return new HTMLError(errorType: ErrorEnums.DOCTYPE_INVALID, reason: "The HTML document does not start with a DOCTYPE declaration.", solution: "Add <!DOCTYPE html> to the top of the document.",
+      errorLevel: ErrorLevelEnums.ERROR
+      );
     }
+    return null;
+  }
 
+  public HTMLError? getHTMLTagError()
+  {
+    var htmlNodes = _htmlDocument.DocumentNode.SelectNodes("//html");
+    if (htmlNodes == null)
+    {
+      return new HTMLError(errorType: ErrorEnums.HTML_TAG_MISSING, reason: "The HTML document does not contain an html tag.", solution: "Add an html tag to the document.",
+      errorLevel: ErrorLevelEnums.ERROR
+      );
+    }
+    return null;
+  }
+
+  public HTMLError? getHeadError()
+  {
     var headNodes = _htmlDocument.DocumentNode.SelectNodes("//head");
     if (headNodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a head tag", "Add a head tag to the document"));
+      return new HTMLError(errorType: ErrorEnums.HEAD_TAG_MISSING, reason: "The HTML document does not contain a head tag.", solution: "Add a head tag to the document.",
+      errorLevel: ErrorLevelEnums.ERROR
+      );
     }
+    return null;
+  }
 
+  public HTMLError? getTitleError()
+  {
     var titleNodes = _htmlDocument.DocumentNode.SelectNodes("//title");
     if (titleNodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a title tag", "Add a title tag to the document"));
+      return new HTMLError(errorType: ErrorEnums.TITLE_TAG_MISSING, reason: "The HTML document does not contain a title tag.", solution: "Add a title tag to the document.",
+      errorLevel: ErrorLevelEnums.ERROR
+      );
     }
+    return null;
+  }
 
+  public HTMLError? getBodyError()
+  {
     var bodyNodes = _htmlDocument.DocumentNode.SelectNodes("//body");
     if (bodyNodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a body tag", "Add a body tag to the document"));
+      return new HTMLError(errorType: ErrorEnums.BODY_TAG_MISSING, reason: "The HTML document does not contain a body tag.", solution: "Add a body tag to the document.",
+      errorLevel: ErrorLevelEnums.ERROR
+      );
     }
+    return null;
+  }
 
+  public HTMLError? getH1Error()
+  {
     var h1Nodes = _htmlDocument.DocumentNode.SelectNodes("//h1");
     if (h1Nodes == null)
     {
-      errors.Add(new HTMLError("HTML does not contain a h1 tag", "Add a h1 tag to the document"));
+      return new HTMLError(errorType: ErrorEnums.H1_TAG_MISSING, reason: "The HTML document does not contain an h1 tag.", solution: "Add an h1 tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+    }
+    return null;
+  }
+
+  public List<HTMLError> GetErrors()
+  {
+    var errors = new List<HTMLError>();
+
+    var doctypeError = getDocTypeError();
+    if (doctypeError != null)
+    {
+      errors.Add(doctypeError);
+    }
+
+    var htmlTagError = getHTMLTagError();
+    if (htmlTagError != null)
+    {
+      errors.Add(htmlTagError);
+    }
+
+    var headError = getHeadError();
+    if (headError != null)
+    {
+      errors.Add(headError);
+    }
+
+    var titleError = getTitleError();
+    if (titleError != null)
+    {
+      errors.Add(titleError);
+    }
+
+    var bodyError = getBodyError();
+    if (bodyError != null)
+    {
+      errors.Add(bodyError);
+    }
+
+    var h1Error = getH1Error();
+    if (h1Error != null)
+    {
+      errors.Add(h1Error);
     }
 
     var htmlErrors = _htmlDocument.ParseErrors;
@@ -144,7 +232,44 @@ public class HTMLDocumentService
     {
       foreach (var htmlError in htmlErrors)
       {
+        var errorType = ErrorEnums.TAG_NOT_CLOSED;
+        var errorLevel = ErrorLevelEnums.ERROR;
+        var solution = "Close the tag";
+        if (htmlError.Code == HtmlAgilityPack.HtmlParseErrorCode.CharsetMismatch)
+        {
+          errorType = ErrorEnums.CHARSET_MISMATCH;
+          errorLevel = ErrorLevelEnums.WARNING;
+          solution = "Change the charset to UTF-8";
+        }
+        else if (htmlError.Code == HtmlAgilityPack.HtmlParseErrorCode.EndTagNotRequired)
+        {
+          errorType = ErrorEnums.END_TAG_NOT_REQUIRED;
+          errorLevel = ErrorLevelEnums.ERROR;
+          solution = $"Remove the end tag for {htmlError.SourceText}";
+        }
+        else if (htmlError.Code == HtmlAgilityPack.HtmlParseErrorCode.EndTagInvalidHere)
+        {
+          errorType = ErrorEnums.END_TAG_INVALID;
+          errorLevel = ErrorLevelEnums.ERROR;
+          solution = $"Remove the end tag for {htmlError.SourceText}";
+        }
+        else if (htmlError.Code == HtmlAgilityPack.HtmlParseErrorCode.TagNotClosed)
+        {
+          errorType = ErrorEnums.TAG_NOT_CLOSED;
+          errorLevel = ErrorLevelEnums.ERROR;
+          solution = $"Close the tag for {htmlError.SourceText}";
+        }
+        else if (htmlError.Code == HtmlAgilityPack.HtmlParseErrorCode.TagNotOpened)
+        {
+          errorType = ErrorEnums.TAG_NOT_OPENED;
+          errorLevel = ErrorLevelEnums.ERROR;
+          solution = $"Open the tag for {htmlError.SourceText}";
+        }
+
         errors.Add(new HTMLError(
+        errorType: errorType,
+        errorLevel: errorLevel,
+        solution: solution,
         code: htmlError.Code.ToString(),
         reason: htmlError.Reason,
         line: htmlError.Line,
@@ -161,59 +286,163 @@ public class HTMLDocumentService
   // solutions for errors
   public void fixDoctypeError()
   {
-    var doctypeValue = _htmlDocument.DocumentNode.OuterHtml.TrimStart().TrimEnd().Replace("\r", "").Replace("\t", "").Substring(0, 15);
-    if (!doctypeValue.Contains("<!DOCTYPE html>"))
+    var doctypeError = getDocTypeError();
+    if (doctypeError != null)
     {
-      var html = _htmlDocument.DocumentNode.OuterHtml;
-      html = html.Insert(0, "<!DOCTYPE html>");
+      var html = GetHTML();
+      var fixedHtml = DOCTYPE_VALUE + html;
+      _htmlDocument.LoadHtml(fixedHtml);
+    }
+  }
+
+  public void fixHTMLTagError()
+  {
+    var htmlTagError = getHTMLTagError();
+    if (htmlTagError != null)
+    {
+      var html = GetHTML();
+
+      // Add the <html> tag after the doctype declaration
+      var doctypeIndex = html.IndexOf(DOCTYPE_VALUE);
+      html = html.Insert(doctypeIndex + DOCTYPE_VALUE.Length, "<html>");
+
+      // Add the </html> tag at the end of the document
+      html = html + "</html>";
+
       _htmlDocument.LoadHtml(html);
     }
   }
 
   public void fixHeadError()
   {
-    var headNodes = _htmlDocument.DocumentNode.SelectNodes("//head");
-    if (headNodes == null)
+    var headError = getHeadError();
+    if (headError != null)
     {
-      var html = _htmlDocument.DocumentNode.OuterHtml;
-      html = html.Insert(0, "<head></head>");
+      var html = GetHTML();
+      // insert after the index of the <html> tag
+      var htmlIndex = html.IndexOf("<html>");
+      html = html.Insert(htmlIndex + "<html>".Length, "<head></head>");
+
       _htmlDocument.LoadHtml(html);
     }
   }
 
   public void fixTitleError()
   {
-    var titleNodes = _htmlDocument.DocumentNode.SelectNodes("//title");
-    if (titleNodes == null)
+    var titleError = getTitleError();
+    if (titleError != null)
     {
-      var html = _htmlDocument.DocumentNode.OuterHtml;
-      html = html.Insert(0, "<title></title>");
+      var html = GetHTML();
+      // insert after the index of the <head> tag
+      var headIndex = html.IndexOf("<head>");
+      html = html.Insert(headIndex + "<head>".Length, "<title></title>");
+
       _htmlDocument.LoadHtml(html);
     }
   }
 
   public void fixBodyError()
   {
-    var bodyNodes = _htmlDocument.DocumentNode.SelectNodes("//body");
-    if (bodyNodes == null)
+    var bodyError = getBodyError();
+    if (bodyError != null)
     {
-      var html = _htmlDocument.DocumentNode.OuterHtml;
-      html = html.Insert(0, "<body></body>");
+      var html = GetHTML();
+      // insert before the index of the </html> tag
+      var htmlIndex = html.IndexOf("</html>");
+      Console.WriteLine("htmlIndex: " + htmlIndex + "\n");
+      if (htmlIndex == -1)
+      {
+        htmlIndex = html.Length;
+      }
+      html = html.Insert(htmlIndex, "<body></body>");
+
       _htmlDocument.LoadHtml(html);
     }
   }
 
   public void fixH1Error()
   {
-    var h1Nodes = _htmlDocument.DocumentNode.SelectNodes("//h1");
-    if (h1Nodes == null)
+    var h1Error = getH1Error();
+    if (h1Error != null)
     {
-      var html = _htmlDocument.DocumentNode.OuterHtml;
-      html = html.Insert(0, "<h1></h1>");
+      var html = GetHTML();
+      // insert after the index of the <body> tag
+      var bodyIndex = html.IndexOf("<body>");
+      html = html.Insert(bodyIndex + 6, "<h1></h1>");
+
       _htmlDocument.LoadHtml(html);
     }
   }
 
+  public void fixErrors(List<HTMLError> errors)
+  {
+    foreach (var error in errors)
+    {
+      if (error.ErrorType == ErrorEnums.DOCTYPE_INVALID)
+      {
+        fixDoctypeError();
+      }
+      else if (error.ErrorType == ErrorEnums.HEAD_TAG_MISSING)
+      {
+        fixHeadError();
+      }
+      else if (error.ErrorType == ErrorEnums.TITLE_TAG_MISSING)
+      {
+        fixTitleError();
+      }
+      else if (error.ErrorType == ErrorEnums.BODY_TAG_MISSING)
+      {
+        fixBodyError();
+      }
+      else if (error.ErrorType == ErrorEnums.H1_TAG_MISSING)
+      {
+        fixH1Error();
+      }
+    }
+  }
+
+  // public void FixAllErrors()
+  // {
+  //   var errors = GetErrors();
+  //   fixErrors(errors);
+  // }
+
+  public void FixAllErrors()
+  {
+    fixDoctypeError();
+    fixHTMLTagError();
+    fixHeadError();
+    fixTitleError();
+    fixBodyError();
+    fixH1Error();
+  }
+
+  public int CalculateRate()
+  {
+    var errors = GetErrors();
+    var rate = 100;
+    foreach (var error in errors)
+    {
+      if (error.ErrorLevel == ErrorLevelEnums.ERROR)
+      {
+        rate -= 10;
+      }
+      else if (error.ErrorLevel == ErrorLevelEnums.WARNING)
+      {
+        rate -= 5;
+      }
+      else if (error.ErrorLevel == ErrorLevelEnums.SEO)
+      {
+        rate -= 2;
+      }
+      else if (error.ErrorLevel == ErrorLevelEnums.ACCESSIBILITY)
+      {
+        rate -= 1;
+      }
+    }
+
+    return rate;
+  }
 
 
 }

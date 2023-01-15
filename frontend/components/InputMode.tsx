@@ -1,15 +1,17 @@
 import LoadingButton from '@mui/lab/LoadingButton';
-import { FormLabel, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
 import Editor from 'components/Editor';
 import Errors from 'components/Errors';
 import { useCallback, useEffect, useState } from 'react';
-import { getAnalyzeFromHtml, HTMlAnalyzerType } from 'src/fetchers/htmlAnalyzerFetchers';
+import { getAnalyzeFromHtml, getFixHtmlAll, HTMlAnalyzerType } from 'src/fetchers/htmlAnalyzerFetchers';
 
 function InputMode() {
   const [code, setCode] = useState('<h1>Hello World!</h1>');
   const [htmlAnalyze, setHtmlAnalyze] = useState<HTMlAnalyzerType | null>(null);
+  const [fixedHtml, setFixedHtml] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showFixedHtmlEditor, setShowFixedHtmlEditor] = useState(false);
 
   const sendHtml = useCallback(async () => {
     try {
@@ -18,6 +20,17 @@ function InputMode() {
       if (response.status === 200) {
         setHtmlAnalyze(response.data);
         setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [code]);
+
+  const getFixedHtml = useCallback(async () => {
+    try {
+      const response = await getFixHtmlAll(code);
+      if (response.status === 200) {
+        setFixedHtml(response.data.html);
       }
     } catch (error) {
       console.error(error);
@@ -35,9 +48,9 @@ function InputMode() {
     <Stack gap={3} id="html-editor-stack">
       <Stack gap={3}>
         <AnalyzerPane gap={2}>
-            <Typography fontWeight={700} fontSize="20px" pl="10px">
-              Enter HTML Input
-            </Typography>
+          <Typography fontWeight={700} fontSize="20px" pl="10px">
+            Enter HTML Input
+          </Typography>
           <Editor code={code} setCode={setCode} />
         </AnalyzerPane>
         <AnalyzerPane justifyContent="center" alignItems="center">
@@ -54,7 +67,40 @@ function InputMode() {
           </LoadingButton>
         </AnalyzerPane>
       </Stack>
-      {htmlAnalyze && <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />}
+      {htmlAnalyze && (
+        <Stack>
+          <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
+          <AnalyzerPane justifyContent="center" alignItems="center">
+            <LoadingButton
+              loading={false}
+              color="secondary"
+              variant="contained"
+              onClick={getFixedHtml}
+              sx={{
+                width: '300px',
+              }}
+            >
+              Fix your HTML!
+            </LoadingButton>
+          </AnalyzerPane>
+        </Stack>
+      )}
+      {fixedHtml.length > 0 && (
+        <AnalyzerPane>
+          <Button
+            onClick={() => {
+              setShowFixedHtmlEditor(!showFixedHtmlEditor);
+            }}
+          >
+            <Typography>{showFixedHtmlEditor ? 'Hide Fixed HTML content' : 'Show Fixed HTML'}</Typography>
+          </Button>
+        </AnalyzerPane>
+      )}
+      {showFixedHtmlEditor && (
+        <AnalyzerPane>
+          <Editor code={fixedHtml} setCode={setFixedHtml} initialReadOnly />
+        </AnalyzerPane>
+      )}
     </Stack>
   );
 }
