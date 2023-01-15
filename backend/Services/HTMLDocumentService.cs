@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 namespace html_analyzer.Services;
 
 using html_analyzer.Enums;
@@ -117,13 +118,15 @@ public class HTMLDocumentService
 
   public HTMLError? getDocTypeError()
   {
-    var doctypeValue = _htmlDocument.DocumentNode.OuterHtml.TrimStart().TrimEnd().Replace("\r", "").Replace("\t", "").Substring(0, DOCTYPE_VALUE.Length > _htmlDocument.Text.Length ? _htmlDocument.Text.Length : DOCTYPE_VALUE.Length);
-    if (!doctypeValue.Contains(DOCTYPE_VALUE))
+    var doctypeRegex = new Regex("<!DOCTYPE\\s+html\\s*>", RegexOptions.IgnoreCase);
+    // check if the document contains a doctype
+    if (!doctypeRegex.IsMatch(_htmlDocument.DocumentNode.OuterHtml))
     {
-      return new HTMLError(errorType: ErrorEnums.DOCTYPE_INVALID, reason: "The HTML document does not start with a DOCTYPE declaration.", solution: "Add <!DOCTYPE html> to the top of the document.",
+      return new HTMLError(errorType: ErrorEnums.DOCTYPE_INVALID, reason: "The HTML document does not contain a doctype.", solution: "Add a doctype to the document.",
       errorLevel: ErrorLevelEnums.ERROR
       );
     }
+
     return null;
   }
 
@@ -401,6 +404,26 @@ public class HTMLDocumentService
     }
   }
 
+  public void wrapImagesWithDiv()
+  {
+    var imageDiv = @"
+    <div
+    style=""display:block; width: 100%; height: 100%;""
+    ></div>
+    ";
+    var images = _htmlDocument.DocumentNode.SelectNodes("//img");
+    if (images == null) return;
+
+    foreach (var image in images)
+    {
+      // create a new div with the same attributes as the imageDiv
+      var predefined = HtmlNode.CreateNode(imageDiv);
+      // wrap the image with the new div
+      image.ParentNode.ReplaceChild(predefined, image);
+      predefined.AppendChild(image);
+    }
+  }
+
   // public void FixAllErrors()
   // {
   //   var errors = GetErrors();
@@ -415,6 +438,7 @@ public class HTMLDocumentService
     fixTitleError();
     fixBodyError();
     fixH1Error();
+    wrapImagesWithDiv();
   }
 
   public int CalculateRate()

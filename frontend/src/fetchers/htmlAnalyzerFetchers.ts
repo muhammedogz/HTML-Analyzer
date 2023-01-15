@@ -7,14 +7,14 @@ const getApiEndpoint = (url: string) => {
   return `${import.meta.env.VITE_API_ENDPOINT}${url}`;
 };
 
-enum ErrorLevelEnums {
+export enum ErrorLevelEnums {
   ERROR,
   WARNING,
   SEO,
   ACCESSIBILITY,
 }
 
-enum ErrorEnums {
+export enum ErrorEnums {
   // Summary: A tag was not closed.
   TAG_NOT_CLOSED,
   //

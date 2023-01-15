@@ -73,14 +73,6 @@ function InputMode() {
       </Stack>
       {htmlAnalyze && (
         <Stack gap={3}>
-          <AnalyzerPane>
-            <Typography fontWeight={700} fontSize="20px" textAlign="center">
-              Your HTML Score
-            </Typography>
-            <Typography fontWeight={700} fontSize="50px" textAlign="center">
-              {htmlAnalyze.rate}
-            </Typography>
-          </AnalyzerPane>
           <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
           <AnalyzerPane justifyContent="center" alignItems="center">
             <LoadingButton
