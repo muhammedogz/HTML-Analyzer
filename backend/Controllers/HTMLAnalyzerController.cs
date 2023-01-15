@@ -82,7 +82,7 @@ public class HTMLAnalyzerController : ControllerBase
     }
 
     var htmlAnalyzerService = new HTMLAnalyzerService(htmlPostModel.HTML, true);
-    var htmlAnalyze = htmlAnalyzerService.AnalyzeHTML();
+    var htmlAnalyze = (HTMLAnalyzeSimple) htmlAnalyzerService.AnalyzeHTML();
     return Ok(new ResponseModel
     {
       Status = 200,
@@ -111,7 +111,6 @@ public class HTMLAnalyzerController : ControllerBase
     {
       Console.WriteLine("error: " + error);
     }
-
 
     return Ok(new ResponseModel
     {
