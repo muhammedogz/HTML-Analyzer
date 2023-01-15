@@ -71,6 +71,9 @@ const URLMode = () => {
         <Stack gap={3}>
           <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
           <AnalyzerPane justifyContent="center" alignItems="center">
+            <Typography>
+              {htmlAnalyze.html.length} characters, {htmlAnalyze.html.split(' ').length} words,
+            </Typography>
             <LoadingButton
               loading={loadingFixButton}
               color="secondary"

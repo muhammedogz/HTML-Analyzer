@@ -181,6 +181,29 @@ public class HTMLDocumentService
     return null;
   }
 
+  //   <input type="button">
+  // <input type="checkbox">
+  // <input type="color">
+  // <input type="date">
+  // <input type="datetime-local">
+  // <input type="email">
+  // <input type="file">
+  // <input type="hidden">
+  // <input type="image">
+  // <input type="month">
+  // <input type="number">
+  // <input type="password">
+  // <input type="radio">
+  // <input type="range">
+  // <input type="reset">
+  // <input type="search">
+  // <input type="submit">
+  // <input type="tel">
+  // <input type="text">
+  // <input type="time">
+  // <input type="url">
+  // <input type="week">
+
   public List<HTMLError> getAttrErrors()
   {
     var attrErrors = new List<HTMLError>();
@@ -194,7 +217,7 @@ public class HTMLDocumentService
         if (allAttributeNames.Contains(attribute.Name))
         {
           // Duplicate attribute
-          attrErrors.Add(new HTMLError { ErrorType = ErrorEnums.DUPLICATE_ATTRIBUTES, ErrorLevel = ErrorLevelEnums.WARNING, Reason = $"Duplicate attribute '{attribute.Name}' on the {node.Name} element.", Solution = $"Remove the duplicate attribute '{attribute.Name}'." });
+          attrErrors.Add(new HTMLError { ErrorType = ErrorEnums.DUPLICATE_ATTRIBUTES, ErrorLevel = ErrorLevelEnums.WARNING, Reason = $"Duplicate attribute '{attribute.Name}' on the {node.Name} element. Line: {attribute.Line}, Column: {attribute.LinePosition}. ", Solution = $"Remove the duplicate attribute '{attribute.Name}'." });
         }
         else
         {
@@ -208,10 +231,10 @@ public class HTMLDocumentService
         if (typeAttribute != null)
         {
           var typeValue = typeAttribute.Value;
-          if (typeValue != "text" && typeValue != "password" && typeValue != "checkbox")
+          if (typeValue != "text" && typeValue != "password" && typeValue != "checkbox" && typeValue != "radio" && typeValue != "submit" && typeValue != "reset" && typeValue != "button" && typeValue != "file" && typeValue != "hidden" && typeValue != "image" && typeValue != "email" && typeValue != "number" && typeValue != "range" && typeValue != "search" && typeValue != "tel" && typeValue != "url" && typeValue != "date" && typeValue != "datetime-local" && typeValue != "month" && typeValue != "time" && typeValue != "week" && typeValue != "color")
           {
             // Invalid value for the type attribute
-            var reason = $"Invalid value '{typeValue}' for the type attribute on the {node.Name} element.";
+            var reason = $"Invalid value '{typeValue}' for the type attribute on the {node.Name} element. Line: {typeAttribute.Line}, Column: {typeAttribute.LinePosition}";
             var solution = $"Change the value of the type attribute to 'text', 'password' or 'checkbox'.";
             var err = new HTMLError(errorType: ErrorEnums.INPUT_TYPE_INVALID, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
             attrErrors.Add(err);
@@ -226,16 +249,16 @@ public class HTMLDocumentService
         if (altAttr == null)
         {
           // Missing alt attribute
-          var reason = $"The {node.Name} element is missing the alt attribute.";
+          var reason = $"The {node.Name} element is missing the alt attribute. Line: {node.Line}, Column: {node.LinePosition}";
           var solution = $"Add an alt attribute to the {node.Name} element.";
-          var err = new HTMLError(errorType: ErrorEnums.IMAGE_ALT_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
+          var err = new HTMLError(errorType: ErrorEnums.IMAGE_ALT_MISSING, errorLevel: ErrorLevelEnums.ACCESSIBILITY, reason: reason, solution: solution);
           attrErrors.Add(err);
         }
         var srcAttr = node.Attributes["src"];
         if (srcAttr == null)
         {
           // Missing src attribute
-          var reason = $"The {node.Name} element is missing the src attribute.";
+          var reason = $"The {node.Name} element is missing the src attribute. Line: {node.Line}, Column: {node.LinePosition}";
           var solution = $"Add an src attribute to the {node.Name} element.";
           var err = new HTMLError(errorType: ErrorEnums.IMAGE_SRC_MISSING, errorLevel: ErrorLevelEnums.ERROR, reason: reason, solution: solution);
           attrErrors.Add(err);
@@ -247,7 +270,7 @@ public class HTMLDocumentService
         if (hrefAttribute == null)
         {
           // Missing href attribute
-          var reason = $"The {node.Name} element is missing the href attribute.";
+          var reason = $"The {node.Name} element is missing the href attribute. Line: {node.Line}, Column: {node.LinePosition}";
           var solution = $"Add an href attribute to the {node.Name} element.";
           var err = new HTMLError(errorType: ErrorEnums.HREF_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
           attrErrors.Add(err);
@@ -259,7 +282,7 @@ public class HTMLDocumentService
         if (actionAttribute == null)
         {
           // Missing action attribute
-          var reason = $"The {node.Name} element is missing the action attribute.";
+          var reason = $"The {node.Name} element is missing the action attribute. Line: {node.Line}, Column: {node.LinePosition}";
           var solution = $"Add an action attribute to the {node.Name} element.";
           var err = new HTMLError(errorType: ErrorEnums.FORM_ACTION_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
           attrErrors.Add(err);
@@ -271,7 +294,7 @@ public class HTMLDocumentService
         if (summaryAttribute == null)
         {
           // Missing summary attribute
-          var reason = $"The {node.Name} element is missing the summary attribute.";
+          var reason = $"The {node.Name} element is missing the summary attribute. Line: {node.Line}, Column: {node.LinePosition}";
           var solution = $"Add a summary attribute to the {node.Name} element.";
           var err = new HTMLError(errorType: ErrorEnums.FORM_ACTION_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
           attrErrors.Add(err);

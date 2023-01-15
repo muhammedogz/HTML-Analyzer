@@ -74,7 +74,11 @@ function InputMode() {
       {htmlAnalyze && (
         <Stack gap={3}>
           <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
-          <AnalyzerPane justifyContent="center" alignItems="center">
+          <AnalyzerPane justifyContent="center" alignItems="center" gap={2}>
+            <Typography width="350px" textAlign="center">
+              Fix button fixes some of the errors automatically. Keep in mind that it may not fix all the errors since
+              solutions are not always unique.
+            </Typography>
             <LoadingButton
               loading={loadingFixButton}
               color="secondary"
