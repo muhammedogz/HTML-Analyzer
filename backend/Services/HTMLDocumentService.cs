@@ -107,15 +107,6 @@ public class HTMLDocumentService
     return htmlVersion;
   }
 
-  //   public enum ErrorLevelEnums
-  // {
-  //   WARNING,
-  //   ERROR,
-  //   SEO,
-  //   ACCESSIBILITY,
-
-  // }
-
   public HTMLError? getDocTypeError()
   {
     var doctypeRegex = new Regex("<!DOCTYPE\\s+html\\s*>", RegexOptions.IgnoreCase);
@@ -238,6 +229,7 @@ public class HTMLDocumentService
         var errorType = ErrorEnums.TAG_NOT_CLOSED;
         var errorLevel = ErrorLevelEnums.ERROR;
         var solution = "Close the tag";
+        var reason = $"Line {htmlError.Line}, position {htmlError.StreamPosition}: {htmlError.Reason}";
         if (htmlError.Code == HtmlAgilityPack.HtmlParseErrorCode.CharsetMismatch)
         {
           errorType = ErrorEnums.CHARSET_MISMATCH;
@@ -273,8 +265,8 @@ public class HTMLDocumentService
         errorType: errorType,
         errorLevel: errorLevel,
         solution: solution,
+        reason: reason,
         code: htmlError.Code.ToString(),
-        reason: htmlError.Reason,
         line: htmlError.Line,
         linePosition: htmlError.LinePosition,
         sourceText: htmlError.SourceText,
@@ -404,6 +396,54 @@ public class HTMLDocumentService
     }
   }
 
+  public void fixParsedErrors()
+  {
+    List<HTMLError> errors = GetErrors();
+    if (errors == null || errors.Count == 0) return;
+    var html = GetHTML();
+
+    foreach (HTMLError error in errors)
+    {
+      if (error == null) continue;
+      else if (error.ErrorType == ErrorEnums.TAG_NOT_OPENED)
+      {
+        var closeTag = error.SourceText;
+        if (closeTag == null) continue;
+        var openTag = "<" + closeTag.Substring(2);
+        html = html.Replace(closeTag, openTag + closeTag);
+      }
+
+      else if (error.ErrorType == ErrorEnums.TAG_NOT_CLOSED)
+      {
+        var linePosition = error.LinePosition;
+        if (linePosition == null) continue;
+
+        var openTag = error?.SourceText?.Substring(0, (int)linePosition);
+        if (openTag == null) continue;
+        var closeTag = "</" + openTag.Substring(1);
+        html = html.Replace(openTag, openTag + closeTag);
+
+      }
+      else if (error.ErrorType == ErrorEnums.END_TAG_NOT_REQUIRED)
+      {
+        var endTag = error.SourceText;
+        if (endTag == null) continue;
+        html = html.Replace(endTag, "");
+      }
+      else if (error.ErrorType == ErrorEnums.END_TAG_INVALID)
+      {
+        var endTag = error.SourceText;
+        var openTag = error?.SourceText?.Substring(2);
+        if (endTag == null || openTag == null) continue;
+        html = html.Replace(endTag, "</" + openTag + ">");
+
+      }
+
+    }
+    _htmlDocument.LoadHtml(html);
+
+  }
+
   public void wrapImagesWithDiv()
   {
     var imageDiv = @"
@@ -438,6 +478,7 @@ public class HTMLDocumentService
     fixTitleError();
     fixBodyError();
     fixH1Error();
+    fixParsedErrors();  
     wrapImagesWithDiv();
   }
 
