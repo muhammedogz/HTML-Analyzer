@@ -1,8 +1,6 @@
 namespace html_analyzer.Services;
 
 using html_analyzer.Models;
-using HtmlAgilityPack;
-using static html_analyzer.Services.HTMLDocumentService;
 public class HTMLAnalyzerService
 {
   private readonly HTMLDocumentService _htmlDocumentService;

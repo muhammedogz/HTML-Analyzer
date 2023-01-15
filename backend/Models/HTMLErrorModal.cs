@@ -10,6 +10,10 @@ namespace html_analyzer.Models
     public int? StreamPosition { get; set; }
     public string? Solution { get; set; }
 
+    public HTMLError()
+    {
+    }
+
     public HTMLError(string? code, string? reason, int? line, int? linePosition, string? sourceText, int? streamPosition)
     {
       Code = code;

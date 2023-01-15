@@ -90,4 +90,34 @@ public class HTMLAnalyzerController : ControllerBase
       Message = "URL Analyzed"
     });
   }
+
+
+  // post /html-analyzer/fix-html
+  [HttpPost("fix-html")]
+  public ActionResult FiHTML([FromBody] FixHtmlRequestModel req)
+  {
+    if (req.HTML == null)
+    {
+      return BadRequest("URL field is required");
+    }
+    if (req.Errors == null)
+    {
+      return BadRequest("Errors field is required");
+    }
+
+    Console.WriteLine("htmlErrors: " + req.Errors);
+    // log errors in loop
+    foreach (var error in req.Errors)
+    {
+      Console.WriteLine("error: " + error);
+    }
+
+
+    return Ok(new ResponseModel
+    {
+      Status = 200,
+      Data = req.Errors,
+      Message = "URL Analyzed"
+    });
+  }
 }
