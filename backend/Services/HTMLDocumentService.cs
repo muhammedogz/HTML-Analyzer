@@ -181,6 +181,107 @@ public class HTMLDocumentService
     return null;
   }
 
+  public List<HTMLError> getAttrErrors()
+  {
+    var attrErrors = new List<HTMLError>();
+
+    foreach (var node in _htmlDocument.DocumentNode.SelectNodes("//*"))
+    {
+      var allAttributes = node.Attributes;
+      var allAttributeNames = new HashSet<string>();
+      foreach (var attribute in allAttributes)
+      {
+        if (allAttributeNames.Contains(attribute.Name))
+        {
+          // Duplicate attribute
+          attrErrors.Add(new HTMLError { ErrorType = ErrorEnums.DUPLICATE_ATTRIBUTES, ErrorLevel = ErrorLevelEnums.WARNING, Reason = $"Duplicate attribute '{attribute.Name}' on the {node.Name} element.", Solution = $"Remove the duplicate attribute '{attribute.Name}'." });
+        }
+        else
+        {
+          allAttributeNames.Add(attribute.Name);
+        }
+      }
+
+      if (node.Name == "input")
+      {
+        var typeAttribute = node.Attributes["type"];
+        if (typeAttribute != null)
+        {
+          var typeValue = typeAttribute.Value;
+          if (typeValue != "text" && typeValue != "password" && typeValue != "checkbox")
+          {
+            // Invalid value for the type attribute
+            var reason = $"Invalid value '{typeValue}' for the type attribute on the {node.Name} element.";
+            var solution = $"Change the value of the type attribute to 'text', 'password' or 'checkbox'.";
+            var err = new HTMLError(errorType: ErrorEnums.INPUT_TYPE_INVALID, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
+            attrErrors.Add(err);
+            // remove the invalid attribute
+            // node.Attributes.Remove(typeAttribute);
+          }
+        }
+      }
+      else if (node.Name == "img")
+      {
+        var altAttr = node.Attributes["alt"];
+        if (altAttr == null)
+        {
+          // Missing alt attribute
+          var reason = $"The {node.Name} element is missing the alt attribute.";
+          var solution = $"Add an alt attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.IMAGE_ALT_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+        var srcAttr = node.Attributes["src"];
+        if (srcAttr == null)
+        {
+          // Missing src attribute
+          var reason = $"The {node.Name} element is missing the src attribute.";
+          var solution = $"Add an src attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.IMAGE_SRC_MISSING, errorLevel: ErrorLevelEnums.ERROR, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+      }
+      else if (node.Name == "a")
+      {
+        var hrefAttribute = node.Attributes["href"];
+        if (hrefAttribute == null)
+        {
+          // Missing href attribute
+          var reason = $"The {node.Name} element is missing the href attribute.";
+          var solution = $"Add an href attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.HREF_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+      }
+      else if (node.Name == "form")
+      {
+        var actionAttribute = node.Attributes["action"];
+        if (actionAttribute == null)
+        {
+          // Missing action attribute
+          var reason = $"The {node.Name} element is missing the action attribute.";
+          var solution = $"Add an action attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.FORM_ACTION_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+      }
+      else if (node.Name == "table")
+      {
+        var summaryAttribute = node.Attributes["summary"];
+        if (summaryAttribute == null)
+        {
+          // Missing summary attribute
+          var reason = $"The {node.Name} element is missing the summary attribute.";
+          var solution = $"Add a summary attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.FORM_ACTION_MISSING, errorLevel: ErrorLevelEnums.WARNING, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+      }
+    }
+
+    return attrErrors;
+  }
+
   public List<HTMLError> GetErrors()
   {
     var errors = new List<HTMLError>();
@@ -219,6 +320,15 @@ public class HTMLDocumentService
     if (h1Error != null)
     {
       errors.Add(h1Error);
+    }
+
+    var invalidInputAttr = getAttrErrors();
+    if (invalidInputAttr != null)
+    {
+      foreach (var error in invalidInputAttr)
+      {
+        errors.Add(error);
+      }
     }
 
     var htmlErrors = _htmlDocument.ParseErrors;
@@ -464,12 +574,6 @@ public class HTMLDocumentService
     }
   }
 
-  // public void FixAllErrors()
-  // {
-  //   var errors = GetErrors();
-  //   fixErrors(errors);
-  // }
-
   public void FixAllErrors()
   {
     fixDoctypeError();
@@ -478,7 +582,7 @@ public class HTMLDocumentService
     fixTitleError();
     fixBodyError();
     fixH1Error();
-    fixParsedErrors();  
+    fixParsedErrors();
     wrapImagesWithDiv();
   }
 
@@ -506,7 +610,7 @@ public class HTMLDocumentService
       }
     }
 
-    return rate;
+    return rate < 0 ? 0 : rate;
   }
 
 

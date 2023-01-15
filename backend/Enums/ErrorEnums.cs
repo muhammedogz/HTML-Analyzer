@@ -35,13 +35,25 @@ public enum ErrorEnums
   // Summary: H1 Tag is missing
   H1_TAG_MISSING,
 
-
-  // Summary:
-  // Input type attribute is invalid.
+  // Summary: Input type attribute is invalid.
   INPUT_TYPE_INVALID,
 
-  // Summary:
-  //     An attribute was duplicated.
+  // Summary: Image alt attribute is missing.
+  IMAGE_ALT_MISSING,
+
+  // Summary: Image src attribute is invalid.
+  IMAGE_SRC_MISSING,
+
+  // Summary: A href attribute is missing.
+  HREF_MISSING,
+
+  // Summary: Form action
+  FORM_ACTION_MISSING,
+
+  // Summary: Duplicate attributes
+  DUPLICATE_ATTRIBUTES,
+
+  // Summary: An attribute was duplicated.
   ATTRIBUTE_DUPLICATE,
 
 }
