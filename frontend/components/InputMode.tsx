@@ -1,6 +1,7 @@
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, Stack, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
+import DiffEditor from 'components/DiffEditor';
 import Editor from 'components/Editor';
 import Errors from 'components/Errors';
 import { useCallback, useEffect, useState } from 'react';
@@ -98,7 +99,7 @@ function InputMode() {
       )}
       {showFixedHtmlEditor && (
         <AnalyzerPane>
-          <Editor code={fixedHtml} setCode={setFixedHtml} initialReadOnly />
+          <DiffEditor code={code} setCode={setCode} otherCode={fixedHtml} setOtherCode={setFixedHtml} initialReadOnly />
         </AnalyzerPane>
       )}
     </Stack>

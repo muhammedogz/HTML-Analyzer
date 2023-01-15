@@ -1,19 +1,18 @@
 import { ChangeCircle, ChangeCircleTwoTone } from '@mui/icons-material';
 import { Button, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import 'ace-builds/src-noconflict/ext-language_tools';
-import 'ace-builds/src-noconflict/mode-html';
-import 'ace-builds/src-noconflict/theme-monokai';
-import 'prismjs/themes/prism-coy.css';
-import { useState } from 'react';
-import AceEditor from 'react-ace';
 
-type EditorProps = {
+import { useState } from 'react';
+import { diff as DiffEditorAce } from 'react-ace';
+
+type DiffEditorProps = {
   code: string;
   setCode: (value: string) => void;
+  otherCode: string;
+  setOtherCode: (value: string) => void;
   initialReadOnly?: boolean;
 };
 
-const Editor = ({ code, setCode, initialReadOnly = false }: EditorProps) => {
+const DiffEditor = ({ code, setCode, otherCode, setOtherCode, initialReadOnly = false }: DiffEditorProps) => {
   const [readOnly, setReadOnly] = useState(initialReadOnly);
   const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'));
 
@@ -21,12 +20,6 @@ const Editor = ({ code, setCode, initialReadOnly = false }: EditorProps) => {
     <Stack
       sx={{
         position: 'relative',
-
-        '& .codeMarker': {
-          background: '#fff677',
-          position: 'absolute',
-          zIndex: 20,
-        },
       }}
     >
       <Stack
@@ -54,18 +47,20 @@ const Editor = ({ code, setCode, initialReadOnly = false }: EditorProps) => {
         </Button>
       </Stack>
 
-      <AceEditor
+      <DiffEditorAce
         readOnly={readOnly}
         wrapEnabled
-        placeholder="Enter your HTML"
         mode="html"
         theme="monokai"
         name="blah2"
         fontSize={16}
         showGutter={true}
-        value={code}
-        onChange={(value) => setCode(value)}
-        onPaste={(value) => setCode(value)}
+        value={[code, otherCode]}
+        onChange={(value) => {
+          setCode(value[0]);
+          setOtherCode(value[1]);
+        }}
+        // onPaste={(value) => setCode(value)}
         setOptions={{
           enableBasicAutocompletion: true,
           enableLiveAutocompletion: false,
@@ -82,4 +77,4 @@ const Editor = ({ code, setCode, initialReadOnly = false }: EditorProps) => {
   );
 };
 
-export default Editor;
+export default DiffEditor;
