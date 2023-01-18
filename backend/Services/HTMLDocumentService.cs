@@ -597,43 +597,115 @@ public class HTMLDocumentService
     }
   }
 
-  public void wrapTableWithDiv()
+  public void convertTableToDiv()
   {
-    var tableDiv = @"
-    <div class=""divTable""
-    style=""display: table; width: 100%;""
-    ></div>
-    ";
-    var tables = _htmlDocument.DocumentNode.SelectNodes("//img");
-    if (tables == null) return;
-
-    foreach (var table in tables)
+    var tableNodes = _htmlDocument.DocumentNode.SelectNodes("//table");
+    if (tableNodes != null)
     {
-      // create a new div with the same attributes as the tableDiv
-      var predefined = HtmlNode.CreateNode(tableDiv);
-      // wrap the table with the new div
-      table.ParentNode.ReplaceChild(predefined, table);
-      predefined.AppendChild(table);
+      foreach (var tableNode in tableNodes)
+      {
+        tableNode.Name = "div";
+        tableNode.Attributes.Remove("class");
+        tableNode.Attributes.Add("class", "divTable");
+        tableNode.Attributes.Remove("style");
+        tableNode.Attributes.Add("style", "display: table; width: 100%;");
+      }
     }
   }
 
-  public void wrapThWithDiv()
+  public void convertTHeadToDiv()
   {
-    var thDiv = @"
-    <div class=""divTh""
-    style=""display: th; width: 100%;""
-    ></div>
-    ";
-    var ths = _htmlDocument.DocumentNode.SelectNodes("//img");
-    if (ths == null) return;
-
-    foreach (var th in ths)
+    var tHeadNodes = _htmlDocument.DocumentNode.SelectNodes("//thead");
+    if (tHeadNodes != null)
     {
-      // create a new div with the same attributes as the thDiv
-      var predefined = HtmlNode.CreateNode(thDiv);
-      // wrap the th with the new div
-      th.ParentNode.ReplaceChild(predefined, th);
-      predefined.AppendChild(th);
+      foreach (var tHeadNode in tHeadNodes)
+      {
+        tHeadNode.Name = "div";
+        tHeadNode.Attributes.Remove("class");
+        tHeadNode.Attributes.Add("class", "divTableHeading");
+        tHeadNode.Attributes.Remove("style");
+        tHeadNode.Attributes.Add("style", "background-color: #EEE; display: table-header-group;");
+      }
+    }
+  }
+
+  public void convertTrToDiv()
+  {
+    var trNodes = _htmlDocument.DocumentNode.SelectNodes("//tr");
+    if (trNodes != null)
+    {
+      foreach (var trNode in trNodes)
+      {
+        trNode.Name = "div";
+        trNode.Attributes.Remove("class");
+        trNode.Attributes.Add("class", "divTableRow");
+        trNode.Attributes.Remove("style");
+        trNode.Attributes.Add("style", "display: table-row;");
+      }
+    }
+  }
+
+  public void convertThToDiv()
+  {
+    var thNodes = _htmlDocument.DocumentNode.SelectNodes("//th");
+    if (thNodes != null)
+    {
+      foreach (var thNode in thNodes)
+      {
+        thNode.Name = "div";
+        thNode.Attributes.Remove("class");
+        thNode.Attributes.Add("class", "divTableHead");
+        thNode.Attributes.Remove("style");
+        thNode.Attributes.Add("style", "border: 1px solid #999999; display: table-cell; padding: 3px 10px;");
+      }
+    }
+  }
+
+  public void convertTBodyToDiv()
+  {
+    var tBodyNodes = _htmlDocument.DocumentNode.SelectNodes("//tbody");
+    if (tBodyNodes != null)
+    {
+      foreach (var tBodyNode in tBodyNodes)
+      {
+        tBodyNode.Name = "div";
+        tBodyNode.Attributes.Remove("class");
+        tBodyNode.Attributes.Add("class", "divTableBody");
+        tBodyNode.Attributes.Remove("style");
+        tBodyNode.Attributes.Add("style", "display: table-row-group;");
+      }
+    }
+  }
+
+  public void convertTdToDiv()
+  {
+    var tdNodes = _htmlDocument.DocumentNode.SelectNodes("//td");
+    if (tdNodes != null)
+    {
+      foreach (var tdNode in tdNodes)
+      {
+        tdNode.Name = "div";
+        tdNode.Attributes.Remove("class");
+        tdNode.Attributes.Add("class", "divTableCell");
+        tdNode.Attributes.Remove("style");
+        tdNode.Attributes.Add("style", "border: 1px solid #999999; display: table-cell; padding: 3px 10px;");
+      }
+    }
+  }
+
+  public void convertTFooterToDiv()
+  {
+    var tFooterNodes = _htmlDocument.DocumentNode.SelectNodes("//tfoot");
+    if (tFooterNodes != null)
+    {
+      foreach (var tdNode in tFooterNodes)
+      {
+        tdNode.Name = "div";
+        tdNode.Attributes.Remove("class");
+        tdNode.Attributes.Add("class", "divTableFoot");
+        tdNode.Attributes.Remove("style");
+        tdNode.Attributes.Add("style", "background-color: #EEE; display: table-footer-group; font-weight: bold;");
+      }
     }
   }
 
@@ -647,7 +719,16 @@ public class HTMLDocumentService
     fixH1Error();
     fixParsedErrors();
     wrapImagesWithDiv();
-    wrapTableWithDiv();
+
+    // tables
+    convertTableToDiv();
+    convertTHeadToDiv();
+    convertTrToDiv();
+    convertThToDiv();
+    convertTBodyToDiv();
+    convertTdToDiv();
+    convertTFooterToDiv();
+
   }
 
   public int CalculateRate()
