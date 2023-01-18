@@ -617,6 +617,26 @@ public class HTMLDocumentService
     }
   }
 
+  public void wrapThWithDiv()
+  {
+    var thDiv = @"
+    <div class=""divTh""
+    style=""display: th; width: 100%;""
+    ></div>
+    ";
+    var ths = _htmlDocument.DocumentNode.SelectNodes("//img");
+    if (ths == null) return;
+
+    foreach (var th in ths)
+    {
+      // create a new div with the same attributes as the thDiv
+      var predefined = HtmlNode.CreateNode(thDiv);
+      // wrap the th with the new div
+      th.ParentNode.ReplaceChild(predefined, th);
+      predefined.AppendChild(th);
+    }
+  }
+
   public void FixAllErrors()
   {
     fixDoctypeError();
