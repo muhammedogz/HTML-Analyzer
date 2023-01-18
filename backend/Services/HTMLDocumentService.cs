@@ -220,6 +220,18 @@ public class HTMLDocumentService
           }
         }
       }
+      // aria label is missing
+      else if (node.Name == "button" || node.Name == "a" || node.Name == "input" || node.Name == "select" || node.Name == "textarea")
+      {
+        var ariaLabelAttribute = node.Attributes["aria-label"];
+        if (ariaLabelAttribute == null)
+        {
+          var reason = $"The {node.Name} element does not contain an aria-label attribute. Line: {node.Line}, Column: {node.LinePosition}";
+          var solution = $"Add an aria-label attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.ARIA_LABEL_MISSING, errorLevel: ErrorLevelEnums.ACCESSIBILITY, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+      }
       else if (node.Name == "img")
       {
         var altAttr = node.Attributes["alt"];

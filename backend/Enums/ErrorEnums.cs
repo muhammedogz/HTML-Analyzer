@@ -56,4 +56,7 @@ public enum ErrorEnums
   // Summary: An attribute was duplicated.
   ATTRIBUTE_DUPLICATE,
 
+  // Summary: Aria label is missing for an element.
+  ARIA_LABEL_MISSING,
+
 }
