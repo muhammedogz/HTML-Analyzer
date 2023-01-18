@@ -597,6 +597,26 @@ public class HTMLDocumentService
     }
   }
 
+  public void wrapTableWithDiv()
+  {
+    var tableDiv = @"
+    <div class=""divTable""
+    style=""display: table; width: 100%;""
+    ></div>
+    ";
+    var tables = _htmlDocument.DocumentNode.SelectNodes("//img");
+    if (tables == null) return;
+
+    foreach (var table in tables)
+    {
+      // create a new div with the same attributes as the tableDiv
+      var predefined = HtmlNode.CreateNode(tableDiv);
+      // wrap the table with the new div
+      table.ParentNode.ReplaceChild(predefined, table);
+      predefined.AppendChild(table);
+    }
+  }
+
   public void FixAllErrors()
   {
     fixDoctypeError();
@@ -607,6 +627,7 @@ public class HTMLDocumentService
     fixH1Error();
     fixParsedErrors();
     wrapImagesWithDiv();
+    wrapTableWithDiv();
   }
 
   public int CalculateRate()
