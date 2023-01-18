@@ -181,29 +181,6 @@ public class HTMLDocumentService
     return null;
   }
 
-  //   <input type="button">
-  // <input type="checkbox">
-  // <input type="color">
-  // <input type="date">
-  // <input type="datetime-local">
-  // <input type="email">
-  // <input type="file">
-  // <input type="hidden">
-  // <input type="image">
-  // <input type="month">
-  // <input type="number">
-  // <input type="password">
-  // <input type="radio">
-  // <input type="range">
-  // <input type="reset">
-  // <input type="search">
-  // <input type="submit">
-  // <input type="tel">
-  // <input type="text">
-  // <input type="time">
-  // <input type="url">
-  // <input type="week">
-
   public List<HTMLError> getAttrErrors()
   {
     var attrErrors = new List<HTMLError>();
@@ -577,6 +554,35 @@ public class HTMLDocumentService
 
   }
 
+  void fixDuplicateAttributes()
+  {
+    var nodes = _htmlDocument.DocumentNode.SelectNodes("//*");
+    if (nodes != null)
+    {
+      foreach (var node in nodes)
+      {
+        var attributeNames = new HashSet<string>();
+        var attributesToRemove = new List<HtmlAttribute>();
+        foreach (var attribute in node.Attributes)
+        {
+          if (attributeNames.Contains(attribute.Name))
+          {
+            attributesToRemove.Add(attribute);
+          }
+          else
+          {
+            attributeNames.Add(attribute.Name);
+          }
+        }
+
+        foreach (var attribute in attributesToRemove)
+        {
+          node.Attributes.Remove(attribute);
+        }
+      }
+    }
+  }
+
   public void wrapImagesWithDiv()
   {
     var imageDiv = @"
@@ -718,6 +724,7 @@ public class HTMLDocumentService
     fixBodyError();
     fixH1Error();
     fixParsedErrors();
+    fixDuplicateAttributes();
     wrapImagesWithDiv();
 
     // tables
