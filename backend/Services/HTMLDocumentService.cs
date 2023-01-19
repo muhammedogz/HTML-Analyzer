@@ -312,7 +312,7 @@ public class HTMLDocumentService
           }
         }
       }
-      else if (node.Name == "button" || node.Name == "a" || node.Name == "input" || node.Name == "select" || node.Name == "textarea")
+      else if (node.Name == "button" || node.Name == "input" || node.Name == "select" || node.Name == "textarea")
       {
         var ariaLabelAttribute = node.Attributes["aria-label"];
         if (ariaLabelAttribute == null)
@@ -327,24 +327,15 @@ public class HTMLDocumentService
       else if (node.Name == "meta")
       {
         var nameAttribute = node.Attributes["name"];
-        if (nameAttribute == null)
+
+        var nameValue = nameAttribute.Value;
+        if (nameValue != "description" && nameValue != "keywords" && nameValue != "author" && nameValue != "viewport" && nameValue != "robots" && nameValue != "googlebot" && nameValue != "google" && nameValue != "google-site-verification" && nameValue != "msvalidate.01" && nameValue != "yandex-verification" && nameValue != "p:domain_verify" && nameValue != "generator" && nameValue != "application-name" && nameValue != "theme-color" && nameValue != "referrer" && nameValue != "twitter:card" && nameValue != "twitter:site" && nameValue != "twitter:creator" && nameValue != "twitter:url" && nameValue != "twitter:title" && nameValue != "twitter:description" && nameValue != "twitter:image" && nameValue != "twitter:image:alt" && nameValue != "twitter:player" && nameValue != "twitter:player:width" && nameValue != "twitter:player:height" && nameValue != "twitter:player:stream" && nameValue != "twitter:app:name:iphone" && nameValue != "twitter:app:id:iphone" && nameValue != "twitter:app:url:iphone" && nameValue != "twitter:app:name:ipad" && nameValue != "twitter:app:id:ipad" && nameValue != "twitter:app:url:ipad" && nameValue != "twitter:app:name:googleplay" && nameValue != "twitter:app:id:googleplay" && nameValue != "twitter:app:url:googleplay" && nameValue != "og:type" && nameValue != "og:title" && nameValue != "og:description")
         {
-          var reason = $"The {node.Name} element does not contain a name attribute. Line: {node.Line}, Column: {node.LinePosition}";
-          var solution = $"Add a name attribute to the {node.Name} element.";
+          // Invalid value for the name attribute
+          var reason = $"Invalid value '{nameValue}' for the name attribute on the {node.Name} element. Line: {nameAttribute.Line}, Column: {nameAttribute.LinePosition}";
+          var solution = $"Change the value of the name attribute to 'description', 'keywords', 'author', 'viewport', 'robots' or another valid value.";
           var err = new HTMLError(errorType: ErrorEnums.META_MISSING, errorLevel: ErrorLevelEnums.SEO, reason: reason, solution: solution);
           attrErrors.Add(err);
-        }
-        else
-        {
-          var nameValue = nameAttribute.Value;
-          if (nameValue != "description" && nameValue != "keywords" && nameValue != "author" && nameValue != "viewport" && nameValue != "robots" && nameValue != "googlebot" && nameValue != "google" && nameValue != "google-site-verification" && nameValue != "msvalidate.01" && nameValue != "yandex-verification" && nameValue != "p:domain_verify" && nameValue != "generator" && nameValue != "application-name" && nameValue != "theme-color" && nameValue != "referrer" && nameValue != "twitter:card" && nameValue != "twitter:site" && nameValue != "twitter:creator" && nameValue != "twitter:url" && nameValue != "twitter:title" && nameValue != "twitter:description" && nameValue != "twitter:image" && nameValue != "twitter:image:alt" && nameValue != "twitter:player" && nameValue != "twitter:player:width" && nameValue != "twitter:player:height" && nameValue != "twitter:player:stream" && nameValue != "twitter:app:name:iphone" && nameValue != "twitter:app:id:iphone" && nameValue != "twitter:app:url:iphone" && nameValue != "twitter:app:name:ipad" && nameValue != "twitter:app:id:ipad" && nameValue != "twitter:app:url:ipad" && nameValue != "twitter:app:name:googleplay" && nameValue != "twitter:app:id:googleplay" && nameValue != "twitter:app:url:googleplay" && nameValue != "og:type" && nameValue != "og:title" && nameValue != "og:description")
-          {
-            // Invalid value for the name attribute
-            var reason = $"Invalid value '{nameValue}' for the name attribute on the {node.Name} element. Line: {nameAttribute.Line}, Column: {nameAttribute.LinePosition}";
-            var solution = $"Change the value of the name attribute to 'description', 'keywords', 'author', 'viewport', 'robots' or another valid value.";
-            var err = new HTMLError(errorType: ErrorEnums.META_MISSING, errorLevel: ErrorLevelEnums.SEO, reason: reason, solution: solution);
-            attrErrors.Add(err);
-          }
         }
       }
       else if (node.Name == "img")
