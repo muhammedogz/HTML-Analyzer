@@ -1,12 +1,13 @@
+import BackupTableIcon from '@mui/icons-material/BackupTable';
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
 import DiffEditor from 'components/DiffEditor';
 import Editor from 'components/Editor';
 import Errors from 'components/Errors';
 import { useCallback, useEffect, useState } from 'react';
 import { getAnalyzeFromHtml, getFixHtmlAll, HtmlAnalyzerResponseType } from 'src/fetchers/htmlAnalyzerFetchers';
-
 function InputMode() {
   const [code, setCode] = useState('<h1>Hello World!</h1>');
   const [htmlAnalyze, setHtmlAnalyze] = useState<HtmlAnalyzerResponseType | null>(null);
@@ -74,22 +75,30 @@ function InputMode() {
       {htmlAnalyze && (
         <Stack gap={3}>
           <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
-          <AnalyzerPane justifyContent="center" alignItems="center" gap={2}>
-            <Typography width="350px" textAlign="center">
-              Fix button fixes some of the errors automatically. Keep in mind that it may not fix all the errors since
-              solutions are not always unique.
-            </Typography>
-            <LoadingButton
-              loading={loadingFixButton}
-              color="secondary"
-              variant="contained"
-              onClick={getFixedHtml}
-              sx={{
-                width: '300px',
-              }}
-            >
-              Fix your HTML!
-            </LoadingButton>
+          <AnalyzerPane justifyContent="center" alignItems="center" gap={2} flexDirection="row">
+            <Tooltip title="Convert your Tables to Proper Divs!">
+              <IconButton>
+                <BackupTableIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="This button will fix all possible errors and warnings. But it will not fix all of them since you should fix them manually.">
+              <LoadingButton
+                loading={loadingFixButton}
+                color="secondary"
+                variant="contained"
+                onClick={getFixedHtml}
+                sx={{
+                  width: '300px',
+                }}
+              >
+                Fix your HTML!
+              </LoadingButton>
+            </Tooltip>
+            <Tooltip title="Wrap your images with proper divs!">
+              <IconButton>
+                <ImageSearchIcon />
+              </IconButton>
+            </Tooltip>
           </AnalyzerPane>
         </Stack>
       )}

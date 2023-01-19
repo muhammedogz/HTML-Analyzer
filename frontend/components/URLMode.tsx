@@ -1,5 +1,7 @@
+import BackupTableIcon from '@mui/icons-material/BackupTable';
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import { LoadingButton } from '@mui/lab';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Button, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
 import DiffEditor from 'components/DiffEditor';
 import Editor from 'components/Editor';
@@ -70,21 +72,30 @@ const URLMode = () => {
       {htmlAnalyze && (
         <Stack gap={3}>
           <Errors htmlAnalyze={htmlAnalyze} setHtmlAnalyze={setHtmlAnalyze} />
-          <AnalyzerPane justifyContent="center" alignItems="center">
-            <Typography>
-              {htmlAnalyze.html.length} characters, {htmlAnalyze.html.split(' ').length} words,
-            </Typography>
-            <LoadingButton
-              loading={loadingFixButton}
-              color="secondary"
-              variant="contained"
-              onClick={getFixedHtml}
-              sx={{
-                width: '300px',
-              }}
-            >
-              Fix your HTML!
-            </LoadingButton>
+          <AnalyzerPane justifyContent="center" alignItems="center" gap={2} flexDirection="row">
+            <Tooltip title="Convert your Tables to Proper Divs!">
+              <IconButton>
+                <BackupTableIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="This button will fix all possible errors and warnings. But it will not fix all of them since you should fix them manually.">
+              <LoadingButton
+                loading={loadingFixButton}
+                color="secondary"
+                variant="contained"
+                onClick={getFixedHtml}
+                sx={{
+                  width: '300px',
+                }}
+              >
+                Fix your HTML!
+              </LoadingButton>
+            </Tooltip>
+            <Tooltip title="Wrap your images with proper divs!">
+              <IconButton>
+                <ImageSearchIcon />
+              </IconButton>
+            </Tooltip>
           </AnalyzerPane>
         </Stack>
       )}

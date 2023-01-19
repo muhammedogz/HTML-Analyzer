@@ -1,4 +1,4 @@
-import { Button, Fade, Stack, Typography } from '@mui/material';
+import { Button, Fade, Stack, Tooltip, Typography } from '@mui/material';
 import AnalyzerPane from 'components/AnalyzerPane';
 import { Dispatch, SetStateAction, useRef } from 'react';
 import Pdf from 'react-to-pdf';
@@ -46,14 +46,18 @@ const Errors = ({ htmlAnalyze, setHtmlAnalyze }: ErrorsProps) => {
             position: 'relative',
           }}
         >
-          <AnalyzerPane>
-            <Typography fontWeight={700} fontSize="20px" textAlign="center">
-              Your HTML Score
-            </Typography>
-            <Typography fontWeight={700} fontSize="50px" textAlign="center">
-              {htmlAnalyze?.rate}
-            </Typography>
-          </AnalyzerPane>
+          <Tooltip title="Score calculated based on the number of errors and warnings">
+            <Stack>
+              <AnalyzerPane>
+                <Typography fontWeight={700} fontSize="20px" textAlign="center">
+                  Your HTML Score
+                </Typography>
+                <Typography fontWeight={700} fontSize="50px" textAlign="center">
+                  {htmlAnalyze?.rate}
+                </Typography>
+              </AnalyzerPane>
+            </Stack>
+          </Tooltip>
           <AnalyzerPane gap={1}>
             <Typography fontWeight={700} fontSize="20px">
               Errors - {htmlAnalyze?.errors.length}
@@ -92,16 +96,31 @@ const Errors = ({ htmlAnalyze, setHtmlAnalyze }: ErrorsProps) => {
                         : '#2196F3'
                     }
                   >
-                    {error.errorLevel === ErrorLevelEnums.ERROR
-                      ? '❌'
-                      : error.errorLevel === ErrorLevelEnums.WARNING
-                      ? '⚠️'
-                      : error.errorLevel === ErrorLevelEnums.SEO
-                      ? '📈'
-                      : '🦾'}
+                    {error.errorLevel === ErrorLevelEnums.ERROR ? (
+                      <Tooltip title="Error" placement="left">
+                        <span>❌</span>
+                      </Tooltip>
+                    ) : error.errorLevel === ErrorLevelEnums.WARNING ? (
+                      <Tooltip title="Warning" placement="left">
+                        <span>⚠️</span>
+                      </Tooltip>
+                    ) : error.errorLevel === ErrorLevelEnums.SEO ? (
+                      <Tooltip title="SEO" placement="left">
+                        <span>📈</span>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Accessibility" placement="left">
+                        <span>🦾</span>
+                      </Tooltip>
+                    )}
                     {error.reason}
                   </Typography>
-                  <Typography color="#224d24">✅ {error.solution}</Typography>
+                  <Typography color="#224d24">
+                    <Tooltip title="Solution" placement="left">
+                      <span>✅</span>
+                    </Tooltip>{' '}
+                    {error.solution}
+                  </Typography>
                 </Stack>
               );
             })}
