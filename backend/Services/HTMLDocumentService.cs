@@ -312,7 +312,7 @@ public class HTMLDocumentService
           }
         }
       }
-      else if (node.Name == "button" || node.Name == "input" || node.Name == "select" || node.Name == "textarea")
+      else if (node.Name == "button" || node.Name == "select" || node.Name == "textarea")
       {
         var ariaLabelAttribute = node.Attributes["aria-label"];
         if (ariaLabelAttribute == null)
