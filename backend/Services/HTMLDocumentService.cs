@@ -327,6 +327,10 @@ public class HTMLDocumentService
       else if (node.Name == "meta")
       {
         var nameAttribute = node.Attributes["name"];
+        if (nameAttribute == null)
+        {
+          continue;
+        }
 
         var nameValue = nameAttribute.Value;
         if (nameValue != "description" && nameValue != "keywords" && nameValue != "author" && nameValue != "viewport" && nameValue != "robots" && nameValue != "googlebot" && nameValue != "google" && nameValue != "google-site-verification" && nameValue != "msvalidate.01" && nameValue != "yandex-verification" && nameValue != "p:domain_verify" && nameValue != "generator" && nameValue != "application-name" && nameValue != "theme-color" && nameValue != "referrer" && nameValue != "twitter:card" && nameValue != "twitter:site" && nameValue != "twitter:creator" && nameValue != "twitter:url" && nameValue != "twitter:title" && nameValue != "twitter:description" && nameValue != "twitter:image" && nameValue != "twitter:image:alt" && nameValue != "twitter:player" && nameValue != "twitter:player:width" && nameValue != "twitter:player:height" && nameValue != "twitter:player:stream" && nameValue != "twitter:app:name:iphone" && nameValue != "twitter:app:id:iphone" && nameValue != "twitter:app:url:iphone" && nameValue != "twitter:app:name:ipad" && nameValue != "twitter:app:id:ipad" && nameValue != "twitter:app:url:ipad" && nameValue != "twitter:app:name:googleplay" && nameValue != "twitter:app:id:googleplay" && nameValue != "twitter:app:url:googleplay" && nameValue != "og:type" && nameValue != "og:title" && nameValue != "og:description")
