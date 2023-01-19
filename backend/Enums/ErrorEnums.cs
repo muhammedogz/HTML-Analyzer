@@ -59,4 +59,7 @@ public enum ErrorEnums
   // Summary: Aria label is missing for an element.
   ARIA_LABEL_MISSING,
 
+  // Summary: Meta is missing.
+  META_MISSING,
+
 }

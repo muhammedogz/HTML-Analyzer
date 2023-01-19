@@ -181,6 +181,98 @@ public class HTMLDocumentService
     return null;
   }
 
+  public List<HTMLError> getMetaErrors()
+  {
+    var metaErrors = new List<HTMLError>();
+
+    var metaNodes = _htmlDocument.DocumentNode.SelectNodes("//meta");
+    if (metaNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta tag.", solution: "Add a meta tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+
+    var descriptionNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@name='description']");
+    if (descriptionNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta description tag.", solution: "Add a meta description tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+    var keywordsNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@name='keywords']");
+    if (keywordsNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta keywords tag.", solution: "Add a meta keywords tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+    var authorNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@name='author']");
+    if (authorNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta author tag.", solution: "Add a meta author tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+    var viewportNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@name='viewport']");
+    if (viewportNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta viewport tag.", solution: "Add a meta viewport tag to the document.",
+      errorLevel: ErrorLevelEnums.WARNING
+      );
+      metaErrors.Add(err);
+    }
+    var charsetNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@charset]");
+    if (charsetNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta charset tag.", solution: "Add a meta charset tag to the document.",
+      errorLevel: ErrorLevelEnums.WARNING
+      );
+      metaErrors.Add(err);
+    }
+    var httpEquivNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@http-equiv]");
+    if (httpEquivNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta http-equiv tag.", solution: "Add a meta http-equiv tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+    // og:title
+    var ogTitleNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@property='og:title']");
+    if (ogTitleNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta og:title tag.", solution: "Add a meta og:title tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+    // og:description
+    var ogDescriptionNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@property='og:description']");
+    if (ogDescriptionNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta og:description tag.", solution: "Add a meta og:description tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+    // og:image
+    var ogImageNodes = _htmlDocument.DocumentNode.SelectNodes("//meta[@property='og:image']");
+    if (ogImageNodes == null)
+    {
+      var err = new HTMLError(errorType: ErrorEnums.META_MISSING, reason: "The HTML document does not contain a meta og:image tag.", solution: "Add a meta og:image tag to the document.",
+      errorLevel: ErrorLevelEnums.SEO
+      );
+      metaErrors.Add(err);
+    }
+
+    return metaErrors;
+  }
+
   public List<HTMLError> getAttrErrors()
   {
     var attrErrors = new List<HTMLError>();
@@ -220,7 +312,6 @@ public class HTMLDocumentService
           }
         }
       }
-      // aria label is missing
       else if (node.Name == "button" || node.Name == "a" || node.Name == "input" || node.Name == "select" || node.Name == "textarea")
       {
         var ariaLabelAttribute = node.Attributes["aria-label"];
@@ -230,6 +321,30 @@ public class HTMLDocumentService
           var solution = $"Add an aria-label attribute to the {node.Name} element.";
           var err = new HTMLError(errorType: ErrorEnums.ARIA_LABEL_MISSING, errorLevel: ErrorLevelEnums.ACCESSIBILITY, reason: reason, solution: solution);
           attrErrors.Add(err);
+        }
+      }
+      // meta is missing
+      else if (node.Name == "meta")
+      {
+        var nameAttribute = node.Attributes["name"];
+        if (nameAttribute == null)
+        {
+          var reason = $"The {node.Name} element does not contain a name attribute. Line: {node.Line}, Column: {node.LinePosition}";
+          var solution = $"Add a name attribute to the {node.Name} element.";
+          var err = new HTMLError(errorType: ErrorEnums.META_MISSING, errorLevel: ErrorLevelEnums.SEO, reason: reason, solution: solution);
+          attrErrors.Add(err);
+        }
+        else
+        {
+          var nameValue = nameAttribute.Value;
+          if (nameValue != "description" && nameValue != "keywords" && nameValue != "author" && nameValue != "viewport" && nameValue != "robots" && nameValue != "googlebot" && nameValue != "google" && nameValue != "google-site-verification" && nameValue != "msvalidate.01" && nameValue != "yandex-verification" && nameValue != "p:domain_verify" && nameValue != "generator" && nameValue != "application-name" && nameValue != "theme-color" && nameValue != "referrer" && nameValue != "twitter:card" && nameValue != "twitter:site" && nameValue != "twitter:creator" && nameValue != "twitter:url" && nameValue != "twitter:title" && nameValue != "twitter:description" && nameValue != "twitter:image" && nameValue != "twitter:image:alt" && nameValue != "twitter:player" && nameValue != "twitter:player:width" && nameValue != "twitter:player:height" && nameValue != "twitter:player:stream" && nameValue != "twitter:app:name:iphone" && nameValue != "twitter:app:id:iphone" && nameValue != "twitter:app:url:iphone" && nameValue != "twitter:app:name:ipad" && nameValue != "twitter:app:id:ipad" && nameValue != "twitter:app:url:ipad" && nameValue != "twitter:app:name:googleplay" && nameValue != "twitter:app:id:googleplay" && nameValue != "twitter:app:url:googleplay" && nameValue != "og:type" && nameValue != "og:title" && nameValue != "og:description")
+          {
+            // Invalid value for the name attribute
+            var reason = $"Invalid value '{nameValue}' for the name attribute on the {node.Name} element. Line: {nameAttribute.Line}, Column: {nameAttribute.LinePosition}";
+            var solution = $"Change the value of the name attribute to 'description', 'keywords', 'author', 'viewport', 'robots' or another valid value.";
+            var err = new HTMLError(errorType: ErrorEnums.META_MISSING, errorLevel: ErrorLevelEnums.SEO, reason: reason, solution: solution);
+            attrErrors.Add(err);
+          }
         }
       }
       else if (node.Name == "img")
@@ -338,6 +453,15 @@ public class HTMLDocumentService
     if (invalidInputAttr != null)
     {
       foreach (var error in invalidInputAttr)
+      {
+        errors.Add(error);
+      }
+    }
+
+    var invalidMetaTags = getMetaErrors();
+    if (invalidMetaTags != null)
+    {
+      foreach (var error in invalidMetaTags)
       {
         errors.Add(error);
       }
